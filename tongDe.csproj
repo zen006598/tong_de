@@ -6,4 +6,27 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.2">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.2" />
+    <PackageReference Include="Vite.AspNetCore" Version="1.12.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+      <None Include="wwwroot/**" CopyToPublishDirectory="PreserveNewest" />
+      <None Include="dist/**" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+  
+  <ItemGroup>
+      <Content Update="package-lock.json" CopyToPublishDirectory="Never" />
+      <Content Update="package.json" CopyToPublishDirectory="Never" />
+  </ItemGroup>
+  
+  <Target Name="ViteBuild" BeforeTargets="BeforeBuild" Condition=" '$(Configuration)' == 'Release' ">
+      <Exec Command="npm run build" />
+  </Target>
 </Project>

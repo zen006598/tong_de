@@ -1,0 +1,10 @@
+@model tongDe.Models.Shop
+@{
+    ViewData["Title"] = "Create";
+}
+
+<form action="@Url.Action("Create", "Home")" method="post">
+    @Html.ValidationSummary()
+    <input type="text" asp-for="Name" />
+    <input type="submit" value="Create" />
+</form>

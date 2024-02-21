@@ -20,6 +20,8 @@ try
 
     builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING")));
 
+    builder.Services.AddAutoMapper(typeof(Program));
+
     builder.Services.AddViteServices(options =>
     {
         options.Server.AutoRun = true;

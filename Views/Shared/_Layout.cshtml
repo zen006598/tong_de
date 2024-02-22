@@ -8,7 +8,7 @@
 </head>
 
 <body class='bg-gray-50 dark:bg-gray-900'>
-    <nav >
+    <nav class='bg-gray-500'>
         <a asp-area="" asp-controller="Home" asp-action="Index">tongDe</a>
         <a asp-area="" asp-controller="Home" asp-action="Create">shop</a>
         <button id="theme-toggle" type="button"
@@ -24,6 +24,7 @@
                     fill-rule="evenodd" clip-rule="evenodd"></path>
             </svg>
         </button>
+        <partial name="_LoginPartial" />
     </nav>
     <div class="container">
         <main role="main" class="pb-3">

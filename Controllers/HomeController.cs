@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using tongDe.Models;
 using tongDe.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Diagnostics;
 
 namespace tongDe.Controllers;
 
@@ -47,12 +48,26 @@ public class HomeController : Controller
         return RedirectToAction("Index", "Home");
     }
 
-
-
-
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        var execeptionHandlerPathFeture = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+
+        var logMessage = $@"
+            Request ID: {Activity.Current?.Id ?? HttpContext.TraceIdentifier}
+            Error Message: {execeptionHandlerPathFeture.Error.Message}
+            Source: {execeptionHandlerPathFeture.Error.Source}
+            ErrorPath: {execeptionHandlerPathFeture.Path}
+            StackTrace: {execeptionHandlerPathFeture.Error.StackTrace}
+            InnerException: {execeptionHandlerPathFeture.Error.InnerException}";
+
+        _logger.LogError(logMessage);
+
+        return View(
+            new ErrorViewModel
+            {
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
+                ErrorMessage = execeptionHandlerPathFeture.Error.Message,
+            });
     }
 }

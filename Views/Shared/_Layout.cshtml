@@ -10,7 +10,7 @@
 
 <body class='bg-gray-50 dark:bg-gray-900'>
 
-  <nav class="bg-white border border-gray-200 border-red-600 dark:bg-gray-900">
+  <nav class="bg-white borde dark:bg-gray-900">
     <div class="flex flex-wrap items-center justify-between max-w-screen-xl p-4 mx-auto">
       <h1>
         <a asp-controller="Home" asp-action="Index"
@@ -57,21 +57,11 @@
             <partial name="_UserNamePartial" />
           </li>
           <li>
-            <a asp-area="" asp-controller="Home" asp-action="Create"
-              class='block px-3 py-2 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent'>shop</a>
+            <a asp-area="" asp-controller="Shop" asp-action="Create"
+              class='block px-3 py-2 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white md:dark:text-blue-500'>
+              Create Shop</a>
           </li>
-          <li>
-            <a href="#"
-              class="block px-3 py-2 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Services</a>
-          </li>
-          <li>
-            <a href="#"
-              class="block px-3 py-2 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Pricing</a>
-          </li>
-          <li>
-            <a href="#"
-              class="block px-3 py-2 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Contact</a>
-          </li>
+
           <li>
             <partial name="_LogoutPartial" />
           </li>
@@ -80,7 +70,7 @@
     </div>
   </nav>
 
-  <main role="main" class="px-4 pt-4 m-auto border border-red-200 nmd:px-0">
+  <main role="main" class="px-4 pt-4 m-auto nmd:px-0">
     @RenderBody()
   </main>
 

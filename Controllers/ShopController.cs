@@ -23,6 +23,21 @@ public class ShopController : Controller
         _userManager = userManager;
         _dbContext = dbContext;
     }
+    [HttpGet("Index")]
+    public async Task<IActionResult> Index()
+    {
+
+        var user = await _userManager.GetUserAsync(User);
+        if (user is null)
+        {
+            _logger.LogError($"Can not found use by id (ID: {user.Id}.)");
+            throw new Exception($"Can not found use by id (ID: {user.Id}.)");
+        }
+
+        var Shops = await _dbContext.Shops.Where(s => s.UserId == user.Id).ToListAsync();
+        return View(Shops);
+    }
+
     [HttpGet("Create")]
     public IActionResult Create()
     {
@@ -60,9 +75,23 @@ public class ShopController : Controller
             return View("Home/Shared/Error", new ErrorViewModel { ErrorMessage = "Unable to save changes. Try again, and if the problem persists, see your system administrator." });
         }
 
-        return RedirectToAction("Index", "Home");
+        return RedirectToAction("Index", "Shop");
     }
+    [HttpGet("Details/{id}")]
+    public async Task<IActionResult> Details(int id)
+    {
+        var shop = await _dbContext.Shops
+                                       .Include(s => s.Clients)
+                                       .FirstOrDefaultAsync(s => s.Id == id);
 
+        if (shop is null)
+        {
+            _logger.LogError($"Shop:({id}) is not found");
+            return NotFound();
+        }
+
+        return View(shop);
+    }
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {

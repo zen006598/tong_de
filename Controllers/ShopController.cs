@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using tongDe.Data;
 using tongDe.Models;
+using tongDe.Models.ViewModels;
 
 namespace tongDe.Controllers;
 
@@ -80,17 +81,43 @@ public class ShopController : Controller
     [HttpGet("Details/{id}")]
     public async Task<IActionResult> Details(int id)
     {
-        var shop = await _dbContext.Shops
-                                       .Include(s => s.Clients)
-                                       .FirstOrDefaultAsync(s => s.Id == id);
+        var shop = await _dbContext.Shops.FirstOrDefaultAsync(s => s.Id == id);
 
         if (shop is null)
         {
-            _logger.LogError($"Shop:({id}) is not found");
-            return NotFound();
+            _logger.LogError($"Can not found Shop by id (ID: {id}.)");
+            throw new Exception($"Can not found Shop by id (ID: {id}.)");
         }
 
-        return View(shop);
+        var items = await _dbContext.Items
+            .Where(i => i.ShopId == id)
+            .Take(10)
+            .ToListAsync();
+
+        if (items is null)
+        {
+            _logger.LogError($"Can not found Items by shopId (ID: {id}.)");
+            throw new Exception($"Can not found Items by shopId (ID: {id}.)");
+        }
+
+        var clients = await _dbContext.Clients
+              .Where(c => c.ShopId == id)
+              .ToListAsync();
+
+        if (clients is null)
+        {
+            _logger.LogError($"Can not found clients by shopId (ID: {id}.)");
+            throw new Exception($"Can not found clients by shopId (ID: {id}.)");
+        }
+
+        var shopDetailsVM = new ShopDetailsVM
+        {
+            Shop = shop,
+            Items = items,
+            Clients = clients
+        };
+
+        return View(shopDetailsVM);
     }
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()

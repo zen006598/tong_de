@@ -1,15 +1,15 @@
-@model tongDe.Models.Shop
+@model tongDe.Models.ViewModels.ShopDetailsVM
 @{
     ViewData["Title"] = "Details";
 }
-<div class='lg:grid lg:grid-cols-4 lg:gap-3'>
-    <div>
+<div class='m-auto lg:grid lg:grid-cols-4 lg:gap-3 max-w-7xl'>
+    <div class='mb-4 lg:mb-0'>
         <div class="flex flex-row items-center justify-between mb-3">
             <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                 Clients
             </h1>
             <div>
-                <a asp-action="Create" asp-controller="Client" asp-route-ShopId="@Model.Id"
+                <a asp-action="Create" asp-controller="Client" asp-route-ShopId="@Model?.Shop?.Id"
                     class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Create
                     Client</a>
             </div>
@@ -41,8 +41,6 @@
                                 </a>
                             </td>
                             <td class="px-6 py-4">
-                                @* connect to order *@
-                                @* if order is not null then show this a link *@
                                 <span
                                     class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Order</span>
 
@@ -58,5 +56,50 @@
             </table>
         </div>
     </div>
-    <div></div>
+    <div>
+        <div class="flex flex-row items-center justify-between mb-3">
+            <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                Items
+            </h1>
+            <div>
+                <a asp-action="Create" asp-controller="Item" asp-route-ShopId="@Model.Shop.Id"
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Create
+                    Item</a>
+            </div>
+        </div>
+        <div class="relative overflow-x-auto rounded-lg shadow-md sm:rounded-lg">
+            <table class="w-full text-sm text-left text-gray-500 rtl:text-right dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">
+                            NAME
+                        </th>
+
+                        <th scope="col" class="px-6 py-3">
+                            <span class="sr-only">ACTION</span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var Item in Model.Items)
+                    {
+                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+
+                            <td class="px-6 py-4">
+                                <a asp-action="Details" asp-controller="Client" asp-route-id="@Item.Id" class='link-text-2'>
+                                    @Item.Name
+                                </a>
+                            </td>
+
+                            <td class="px-6 py-4 text-right">
+                                <a class="link-text" asp-action="Edit" asp-controller="Item" asp-route-id="@Item.Id">
+                                    <i class="fa-solid fa-gear"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>

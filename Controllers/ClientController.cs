@@ -37,7 +37,7 @@ public class ClientController : Controller
         var shop = await _dbContext.Shops.FindAsync(shopId);
         if (shop is null)
         {
-            _logger.LogError("Shop with ID {ShopId} not found!", shopId);
+            _logger.LogError($"Shop with ID {shopId} not found!", shopId);
             return View(client);
         }
 
@@ -88,7 +88,6 @@ public class ClientController : Controller
 
         return RedirectToAction("Details", "Shop", new { id = clientToUpdate.ShopId });
     }
-
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()

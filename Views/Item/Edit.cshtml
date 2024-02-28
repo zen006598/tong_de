@@ -25,7 +25,6 @@
         </div>
     </div>
 
-
     <div class="mb-5">
         <label for="Unit"
             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white after:content-['*'] after:ml-0.5 after:text-red-500">Unit</label>
@@ -69,59 +68,59 @@
 </div>
 
 @section Scripts {
-    <script type='module' vite-src='~/itemEdit.js'></script>
+        <script type='module' vite-src='~/itemEdit.js'></script>
 
-    <script>
-        const itemAliasList = document.querySelector("#item-alias-list");
-        const itemAliasCreateButton = document.querySelector("#item-alias-create-button");
+        <script>
+            const itemAliasList = document.querySelector("#item-alias-list");
+            const itemAliasCreateButton = document.querySelector("#item-alias-create-button");
 
-        itemAliasCreateButton.addEventListener('click', async (e) => {
-            e.preventDefault();
-            const itemAliasName = document.querySelector("#item-alias-name");
-            const itemAliasNameValue = itemAliasName.value.trim();
-            const itemId = @Model.Id;
+            itemAliasCreateButton.addEventListener('click', async (e) => {
+                e.preventDefault();
+                const itemAliasName = document.querySelector("#item-alias-name");
+                const itemAliasNameValue = itemAliasName.value.trim();
+                const itemId = @Model.Id;
 
-            if (itemAliasNameValue === '') return;
+                if (itemAliasNameValue === '') return;
 
-            const itemAlias = {
-                Name: itemAliasNameValue,
-                ItemId: itemId
-            };
+                const itemAlias = {
+                    Name: itemAliasNameValue,
+                    ItemId: itemId
+                };
 
-            const createRespone = await createItemAlias("http://localhost:5224/api/Item/@Model.Id/ItemAlias/Create", itemAlias);
-        })
+                const createRespone = await createItemAlias("http://localhost:5224/api/Item/@Model.Id/ItemAlias/Create", itemAlias);
+            })
 
-        async function createItemAlias(url = "", data = {}) {
-            try {
-                const response = await fetch(url, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(data),
-                });
+            async function createItemAlias(url = "", data = {}) {
+                try {
+                    const response = await fetch(url, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(data),
+                    });
 
-                const responseData = await response.json();
+                    const responseData = await response.json();
 
-                if (response.ok) {
-                    return responseData;
-                } else {
-                    throw responseData;
-                }
-            } catch (error) {
-                displayErrors(error.errors);
+                    if (response.ok) {
+                        return responseData;
+                    } else {
+                        throw responseData;
+                    }
+                } catch (error) {
+                    displayErrors(error.errors);
 
-            }
-        }
-
-        function displayErrors(errors) {
-            for (const key in errors) {
-                if (errors.hasOwnProperty(key)) {
-
-                    console.log(key);
-                    console.log(errors[key].join());
                 }
             }
-        }
-    </script>
+
+            function displayErrors(errors) {
+                for (const key in errors) {
+                    if (errors.hasOwnProperty(key)) {
+
+                        console.log(key);
+                        console.log(errors[key].join());
+                    }
+                }
+            }
+        </script>
 }

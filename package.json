@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "flowbite": "^2.3.0",
+    "izitoast": "^1.4.0",
     "pinyin": "3.1"
   }
 }

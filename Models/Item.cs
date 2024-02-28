@@ -13,4 +13,5 @@ public class Item
     public string? Unit { get; set; }
     public int ShopId { get; set; }
     public Shop Shop { get; set; } = null!;
+    public ICollection<ItemAlias> ItemAliases { get; } = new List<ItemAlias>();
 }

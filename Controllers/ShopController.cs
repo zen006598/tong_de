@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,15 +15,18 @@ public class ShopController : Controller
     private readonly ILogger<ShopController> _logger;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly ApplicationDbContext _dbContext;
+    private readonly IMapper _mapper;
 
     public ShopController(
         ILogger<ShopController> logger,
         UserManager<ApplicationUser> userManager,
-        ApplicationDbContext dbContext)
+        ApplicationDbContext dbContext,
+        IMapper mapper)
     {
         _logger = logger;
         _userManager = userManager;
         _dbContext = dbContext;
+        _mapper = mapper;
     }
     [HttpGet("Index")]
     public async Task<IActionResult> Index()
@@ -119,6 +123,24 @@ public class ShopController : Controller
 
         return View(shopDetailsVM);
     }
+
+    [HttpGet("{Id}/Items")]
+    public async Task<IActionResult> Items(int? Id)
+    {
+        var shop = await _dbContext.Shops
+                              .Include(s => s.Items)
+                              .FirstOrDefaultAsync(s => s.Id == Id);
+        if (shop is null)
+        {
+            _logger.LogError($"Shop Id:({Id}) is not found");
+            return NotFound();
+        }
+
+        var itemViewModel = _mapper.Map<ItemsVM>(shop);
+
+        return View(itemViewModel);
+    }
+
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {

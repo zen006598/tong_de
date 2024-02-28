@@ -25,6 +25,7 @@
         </div>
     </div>
 
+
     <div class="mb-5">
         <label for="Unit"
             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white after:content-['*'] after:ml-0.5 after:text-red-500">Unit</label>
@@ -34,17 +35,93 @@
         <span asp-validation-for="Unit" class="text-red-600"></span>
     </div>
 
-    <div class='flex items-center justify-between'>
-        <a asp-controller="Shop" asp-action="Index" asp-route-id="@Model.ShopId"
-            class="block text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
-            <i class="fa-solid fa-arrow-left"></i>
-        </a>
+    <div class='flex flex-wrap items-center gap-3 mb-5'>
+        <div class='flex flex-wrap items-center gap-3' id='item-alias-list'>
+            <span
+                class="bg-blue-100 text-blue-800 text-lg font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">Default</span>
+        </div>
+    </div>
 
-        <button type="submit"
-            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Update</button>
+    <div class='fixed bottom-0 left-0 z-10 w-full px-4 py-2 bg-gray-50 dark:bg-gray-900 '>
+        <div class='flex items-center justify-between w-full gap-3'>
+            <a asp-controller="Shop" asp-action="Index" asp-route-id="@Model.ShopId"
+                class="block text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+
+            <button type="submit"
+                class="text-white w-full bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Update</button>
+        </div>
     </div>
 </form>
 
+<div class="fixed left-0 z-10 w-full px-4 py-2 rounded-t-lg bottom-14 bg-gray-50 dark:bg-gray-900 ">
+
+    <form class='flex items-center justify-between gap-3'>
+        <input type="text" id="item-alias-name"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="create item alias" required />
+
+        <button type="submit" id='item-alias-create-button'
+            class="text-white  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Create</button>
+    </form>
+
+</div>
+
 @section Scripts {
     <script type='module' vite-src='~/itemEdit.js'></script>
+
+    <script>
+        const itemAliasList = document.querySelector("#item-alias-list");
+        const itemAliasCreateButton = document.querySelector("#item-alias-create-button");
+
+        itemAliasCreateButton.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const itemAliasName = document.querySelector("#item-alias-name");
+            const itemAliasNameValue = itemAliasName.value.trim();
+            const itemId = @Model.Id;
+
+            if (itemAliasNameValue === '') return;
+
+            const itemAlias = {
+                Name: itemAliasNameValue,
+                ItemId: itemId
+            };
+
+            const createRespone = await createItemAlias("http://localhost:5224/api/Item/@Model.Id/ItemAlias/Create", itemAlias);
+        })
+
+        async function createItemAlias(url = "", data = {}) {
+            try {
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                const responseData = await response.json();
+
+                if (response.ok) {
+                    return responseData;
+                } else {
+                    throw responseData;
+                }
+            } catch (error) {
+                displayErrors(error.errors);
+
+            }
+        }
+
+        function displayErrors(errors) {
+            for (const key in errors) {
+                if (errors.hasOwnProperty(key)) {
+
+                    console.log(key);
+                    console.log(errors[key].join());
+                }
+            }
+        }
+    </script>
 }

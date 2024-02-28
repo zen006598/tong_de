@@ -10,13 +10,13 @@ public class UniqueItemNameAttribute : ValidationAttribute
 
         var logger = validationContext.GetService(typeof(ILogger<UniqueItemNameAttribute>)) as ILogger<UniqueItemNameAttribute>;
 
-        var itemName = value as string;
-
-        if (string.IsNullOrWhiteSpace(itemName)) return new ValidationResult("Item name is required.");
-
         var dbContext = validationContext.GetService(typeof(ApplicationDbContext)) as ApplicationDbContext;
 
         if (dbContext is null) return new ValidationResult("Database context is not available.");
+
+        var itemName = value as string;
+
+        if (string.IsNullOrWhiteSpace(itemName)) return new ValidationResult("Item name is required.");
 
         var currentObject = validationContext.ObjectInstance;
         var shopIdProperty = currentObject.GetType().GetProperty("ShopId");

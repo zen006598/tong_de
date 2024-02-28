@@ -13,4 +13,5 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Shop> Shops { get; set; }
     public DbSet<Client> Clients { get; set; }
     public DbSet<Item> Items { get; set; }
+    public DbSet<ItemAlias> ItemAliases { get; set; }
 }

@@ -94,7 +94,21 @@ public class ItemController : Controller
             return View(itemEditVM);
         }
 
-        return RedirectToAction("Details", "Shop", new { id = itemToUpdate.ShopId });
+        return RedirectToAction("Details", "Item", new { id = itemToUpdate.Id });
+    }
+
+    [HttpGet("Item/Details/{id}")]
+    public async Task<IActionResult> Details(int? id)
+    {
+        var item = await _dbContext.Items.Include(i => i.ItemAliases).FirstOrDefaultAsync(i => i.Id == id);
+
+        if (item is null)
+        {
+            _logger.LogError($"Item Id:({id}) is not found");
+            return NotFound();
+        }
+
+        return View(item);
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

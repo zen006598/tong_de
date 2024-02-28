@@ -19,17 +19,20 @@ public class UniqueItemNameAttribute : ValidationAttribute
         if (dbContext is null) return new ValidationResult("Database context is not available.");
 
         var currentObject = validationContext.ObjectInstance;
-
         var shopIdProperty = currentObject.GetType().GetProperty("ShopId");
-
+        var itemIdProperty = currentObject.GetType().GetProperty("Id");
 
         if (shopIdProperty is null) throw new InvalidOperationException("ShopId not found on validating object.");
 
-        var shopId = (int)shopIdProperty.GetValue(currentObject);
+        var shopId = (int?)shopIdProperty.GetValue(currentObject);
+        var itemId = itemIdProperty is not null ? (int?)itemIdProperty.GetValue(currentObject) : null;
 
-        bool nameExists = dbContext.Items.Any(item => item.Name == itemName && item.ShopId == shopId);
+        bool nameExists = dbContext.Items.Any(item =>
+            item.Name == itemName &&
+            item.ShopId == shopId &&
+            (!itemId.HasValue || item.Id != itemId.Value));
 
-        logger?.LogInformation($"UniqueItemName Verify Result : {nameExists}.");
+        logger?.LogInformation("Validating item name: {ItemName} in shopId: {ShopId} with itemId: {ItemId}. UniqueItemName Verify Result: {NameExists}.", itemName, shopId, itemId, nameExists);
 
         if (nameExists)
         {

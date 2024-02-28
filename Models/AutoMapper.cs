@@ -12,7 +12,9 @@ public class AutoMapper : Profile
     CreateMap<Client, ClientEditVM>();
 
     CreateMap<ItemCreateVM, Item>();
-    CreateMap<ItemEditVM, Item>().ForMember(dest => dest.ShopId, opt => opt.Ignore());
+    CreateMap<ItemEditVM, Item>()
+      .ForMember(dest => dest.ShopId, opt => opt.Ignore())
+      .ForMember(dest => dest.Id, opt => opt.Ignore());
     CreateMap<Item, ItemEditVM>();
   }
 }

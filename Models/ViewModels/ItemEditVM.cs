@@ -5,6 +5,9 @@ namespace tongDe.Models.ViewModels;
 
 public class ItemEditVM
 {
+    [Required]
+    public int Id { get; set; }
+
     [Required(ErrorMessage = "Name is required"), UniqueItemName]
     public string? Name { get; set; }
     public string? PinyIn { get; set; }

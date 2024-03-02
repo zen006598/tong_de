@@ -14,4 +14,5 @@ public class ItemEditVM
     [Required]
     public string? Unit { get; set; }
     public int ShopId { get; set; }
+    public List<ItemAlias>? ItemAliases { get; set; }
 }

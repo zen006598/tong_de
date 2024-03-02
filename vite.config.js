@@ -10,7 +10,8 @@ export default {
             input: {
                 main: 'Assets/main.js',
                 itemCreate: 'Assets/itemCreate.js',
-                itemEdit: 'Assets/itemEdit.js'
+                itemEdit: 'Assets/itemEdit.js',
+                izitoast: 'Assets/izitoast.js'
             },
             output: {
                 entryFileNames: '[name].js',

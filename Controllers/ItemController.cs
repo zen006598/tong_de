@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using tongDe.Data;
@@ -6,6 +7,7 @@ using tongDe.Models;
 using tongDe.Models.ViewModels;
 
 namespace tongDe.Controllers;
+[Authorize]
 public class ItemController : Controller
 {
     private readonly ILogger<ItemController> _logger;
@@ -64,7 +66,9 @@ public class ItemController : Controller
     [HttpGet("Item/Edit/{id}")]
     public IActionResult Edit(int id)
     {
-        var item = _dbContext.Items.FirstOrDefault(item => item.Id == id);
+        var item = _dbContext.Items
+            .Include(i => i.ItemAliases)
+            .FirstOrDefault(item => item.Id == id);
         if (item is null) return NotFound();
         var itemEditVM = _mapper.Map<ItemEditVM>(item);
         return View(itemEditVM);

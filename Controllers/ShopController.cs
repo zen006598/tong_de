@@ -93,17 +93,6 @@ public class ShopController : Controller
             throw new Exception($"Can not found Shop by id (ID: {id}.)");
         }
 
-        var items = await _dbContext.Items
-            .Where(i => i.ShopId == id)
-            .Take(10)
-            .ToListAsync();
-
-        if (items is null)
-        {
-            _logger.LogError($"Can not found Items by shopId (ID: {id}.)");
-            throw new Exception($"Can not found Items by shopId (ID: {id}.)");
-        }
-
         var clients = await _dbContext.Clients
               .Where(c => c.ShopId == id)
               .ToListAsync();
@@ -117,7 +106,6 @@ public class ShopController : Controller
         var shopDetailsVM = new ShopDetailsVM
         {
             Shop = shop,
-            Items = items,
             Clients = clients
         };
 

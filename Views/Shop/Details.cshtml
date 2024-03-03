@@ -27,7 +27,27 @@
     </a>
 
 </div>
-<div class='hidden m-auto lg:grid lg:grid-cols-4 lg:gap-3 max-w-7xl'>
+
+<div class='hidden w-full m-auto mb-3 text-center max-w-7xl lg:block'>
+    <div class="inline-flex rounded-md shadow-sm" role="group">
+        <a asp-controller="Shop" asp-action="Items" asp-route-id="@Model?.Shop?.Id"
+            class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+            Items
+        </a>
+        <a href='#'
+            class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+            Orders
+        </a>
+        <a href='#'
+            class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+            Messages
+        </a>
+    </div>
+
+</div>
+
+<div class='hidden m-auto lg:grid lg:grid-cols-4 lg:gap-3 '>
+
     <div class='mb-4 lg:mb-0'>
         <div class="flex flex-row items-center justify-between mb-3">
             <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
@@ -83,49 +103,5 @@
         </div>
     </div>
     <div>
-        <div class="flex flex-row items-center justify-between mb-3">
-            <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-                Items
-            </h1>
-            <div>
-                <a asp-action="Create" asp-controller="Item" asp-route-ShopId="@Model.Shop.Id"
-                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Create
-                    Item</a>
-            </div>
-        </div>
-        <div class="relative overflow-x-auto rounded-lg shadow-md sm:rounded-lg">
-            <table class="w-full text-sm text-left text-gray-500 rtl:text-right dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                        <th scope="col" class="px-6 py-3">
-                            NAME
-                        </th>
-
-                        <th scope="col" class="px-6 py-3">
-                            <span class="sr-only">ACTION</span>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var Item in Model.Items)
-                    {
-                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-
-                            <td class="px-6 py-4">
-                                <a asp-action="Details" asp-controller="Client" asp-route-id="@Item.Id" class='link-text-2'>
-                                    @Item.Name
-                                </a>
-                            </td>
-
-                            <td class="px-6 py-4 text-right">
-                                <a class="link-text" asp-action="Edit" asp-controller="Item" asp-route-id="@Item.Id">
-                                    <i class="fa-solid fa-gear"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
     </div>
 </div>

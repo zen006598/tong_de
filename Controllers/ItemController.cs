@@ -60,7 +60,7 @@ public class ItemController : Controller
             return View(itemCreateVM);
         }
 
-        return RedirectToAction("Details", "Shop", new { id = shopId });
+        return RedirectToAction("Items", "Shop", new { id = shopId });
     }
 
     [HttpGet("Item/Edit/{id}")]
@@ -113,6 +113,29 @@ public class ItemController : Controller
         }
 
         return View(item);
+    }
+    [HttpPost("Item/Delete/{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var item = await _dbContext.Items.
+            Include(i => i.ItemAliases)
+            .FirstOrDefaultAsync(i => i.Id == id);
+
+        if (item is null) return NotFound(new { message = $"ItemAlias with ID {id} not found." });
+
+        try
+        {
+
+            _dbContext.Items.Remove(item);
+            await _dbContext.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, $"Error occurred while deleting ItemAlias with ID {id}.");
+            return NotFound(new { message = $"Error occurred while deleting ItemAlias with ID {id}." });
+        }
+
+        return RedirectToAction("items", "Shop", new { id = item.ShopId });
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -4,7 +4,8 @@
 }
 <div
     class='max-w-sm px-4 m-auto text-gray-500 bg-white border rounded-lg lg:hidden dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400'>
-    <a href='#' class='block py-3 border-b dark:border-gray-700'>
+    <a asp-controller="Shop" asp-action="Clients" asp-route-id="@Model?.Shop?.Id"
+        class='block py-3 border-b dark:border-gray-700'>
         <div class='flex items-center justify-between'>
             <span>
                 <i class="p-1 mr-3 text-white bg-green-500 rounded-md fa-solid fa-user-tie"></i>
@@ -70,7 +71,8 @@
 
                             </td>
                             <td class="px-6 py-4 text-right">
-                                <a class="link-text" asp-action="Edit" asp-controller="Client" asp-route-id="@Client.Id">
+                                <a class="link-text" asp-action="Edit" asp-controller="Client" asp-route-id="@Client.Id"
+                                    method='post'>
                                     <i class="fa-solid fa-gear"></i>
                                 </a>
                             </td>

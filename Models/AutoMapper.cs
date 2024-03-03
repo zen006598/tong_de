@@ -18,6 +18,7 @@ public class AutoMapper : Profile
     CreateMap<Item, ItemEditVM>();
 
     CreateMap<Shop, ItemsVM>().ForMember(dest => dest.ShopId, opt => opt.MapFrom(src => src.Id));
+    CreateMap<Shop, ClientVM>().ForMember(dest => dest.ShopId, opt => opt.MapFrom(src => src.Id));
 
     CreateMap<ItemAliasCreateVM, ItemAlias>();
   }

@@ -125,14 +125,14 @@ public class ShopController : Controller
     }
 
     [HttpGet("{Id}/Items")]
-    public async Task<IActionResult> Items(int? Id)
+    public async Task<IActionResult> Items(int? id)
     {
         var shop = await _dbContext.Shops
                               .Include(s => s.Items)
-                              .FirstOrDefaultAsync(s => s.Id == Id);
+                              .FirstOrDefaultAsync(s => s.Id == id);
         if (shop is null)
         {
-            _logger.LogError($"Shop Id:({Id}) is not found");
+            _logger.LogError($"Shop Id:({id}) is not found");
             return NotFound();
         }
 
@@ -140,6 +140,23 @@ public class ShopController : Controller
 
         return View(itemViewModel);
     }
+    [HttpGet("{Id}/Clients")]
+    public async Task<IActionResult> Clients(int? id)
+    {
+        var shop = await _dbContext.Shops
+                      .Include(s => s.Clients)
+                      .FirstOrDefaultAsync(s => s.Id == id);
+        if (shop is null)
+        {
+            _logger.LogError($"Shop Id:({id}) is not found");
+            return NotFound();
+        }
+
+        var clientViewModel = _mapper.Map<ClientVM>(shop);
+
+        return View(clientViewModel);
+    }
+
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()

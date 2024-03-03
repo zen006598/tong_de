@@ -11,7 +11,8 @@ export default {
                 main: 'Assets/main.js',
                 itemCreate: 'Assets/itemCreate.js',
                 itemEdit: 'Assets/itemEdit.js',
-                izitoast: 'Assets/izitoast.js'
+                izitoast: 'Assets/izitoast.js',
+                items: 'Assets/items.js'
             },
             output: {
                 entryFileNames: '[name].js',

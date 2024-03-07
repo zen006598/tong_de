@@ -27,13 +27,6 @@ public class ItemAliasApiController : ControllerBase
         _mapper = mapper;
     }
 
-    [HttpGet("GetData")]
-    public IActionResult GetData()
-    {
-        var data = new { Name = "Example", Value = "123" };
-        return Ok(data);
-    }
-
     [HttpPost("Item/{ItemId}/ItemAlias/Create")]
     public async Task<ActionResult<ItemAlias>> Create(ItemAliasCreateVM itemAliasCreateVM)
     {

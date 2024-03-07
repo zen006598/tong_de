@@ -9,7 +9,7 @@ using tongDe.Models.ViewModels;
 using Newtonsoft.Json;
 
 namespace tongDe.Controllers;
-
+[Authorize]
 [Route("[controller]"), Authorize]
 public class ShopController : Controller
 {

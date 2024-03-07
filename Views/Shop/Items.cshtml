@@ -2,19 +2,48 @@
 @{
     ViewData["Title"] = "Items";
 }
+<div class='items-center justify-between hidden w-full max-w-md m-auto mb-4 lg:flex'>
+    <a asp-controller="Shop" asp-action="Details" asp-route-id="@Model.ShopId" class='block py-1 pr-4'>
+        <i class="text-xl text-gray-900 fa-solid fa-chevron-left dark:text-white"></i>
+    </a>
 
-<div class='fixed bottom-0 left-0 z-10 w-full px-4 py-2 rounded-t-lg bg-gray-50 dark:bg-gray-900 '>
+    <form asp-controller="Shop" asp-action="Items" method='get' id='filter-form'>
+        <div>
+            <select id='item-category-select' name='itemCategoryId' class='w-40 selector'>
+                @if (Model.ItemCategories is null)
+                {
+                    <option value='-1' disabled>Do no set item category</option>
+                }
+                else
+                {
+                    <option value='0'>All</option>
+                    @foreach (ItemCategory itemCategory in Model.ItemCategories)
+                    {
+                        <option value='@itemCategory.Id'>
+                            @itemCategory.Name
+                        </option>
+                    }
+                }
+            </select>
+        </div>
+    </form>
+
+    <a asp-action="Create" asp-controller="Item" asp-route-ShopId="@Model.ShopId" class="blue-700-button">
+        Create Item
+    </a>
+</div>
+
+<div class='fixed bottom-0 left-0 z-10 w-full px-4 py-2 rounded-t-lg bg-gray-50 dark:bg-gray-900 lg:hidden'>
     <div class='flex items-center justify-between w-full max-w-md m-auto'>
         <a asp-controller="Shop" asp-action="Details" asp-route-id="@Model.ShopId" class='block py-1 pr-4'>
             <i class="text-xl text-gray-900 fa-solid fa-chevron-left dark:text-white"></i>
         </a>
-        <a asp-action="Create" asp-controller="Item" asp-route-ShopId="@Model.ShopId"
-            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Create
+        <a asp-action="Create" asp-controller="Item" asp-route-ShopId="@Model.ShopId" class="blue-700-button">Create
             Item</a>
     </div>
 </div>
 
-<div class='max-w-md m-auto mb-3'>
+<div class='max-w-md m-auto mb-3 lg:hidden'>
     <form asp-controller="Shop" asp-action="Items" method='get' id='filter-form'>
         <div>
             <select id='item-category-select' name='itemCategoryId'
@@ -59,7 +88,7 @@
                     <tr class="items-center w-full border-b dark:border-gray-700">
                         @if (item.ItemCategoryName is not null)
                         {
-                            <td class='h-full py-3 text-center text-white rounded-l-lg bg-sky-600'>
+                            <td class='h-full py-3 text-center text-white rounded-r-lg bg-sky-600'>
                                 @item.ItemCategoryName
                             </td>
                         }
@@ -75,13 +104,13 @@
                                 <span class='items-center hidden' id='option-list-@item.Id'>
                                     <a asp-action="Edit" asp-controller="Item" asp-route-id="@item.Id"
                                         class="inline-flex items-center justify-center w-6 h-6 text-sm font-semibold text-gray-800 bg-gray-100 rounded-full me-2 dark:bg-gray-700 dark:text-gray-300">
-                                        <i class=" fa-solid fa-trash-can hover:text-orange-500"></i>
+                                        <i class=" fa-solid fa-gear hover:text-orange-500"></i>
                                     </a>
 
                                     <form asp-action="Delete" asp-controller="Item" method="post" asp-route-id="@item.Id">
                                         <button type='submit'
                                             class="inline-flex items-center justify-center w-6 h-6 text-sm font-semibold text-gray-800 bg-gray-100 rounded-full me-2 dark:bg-gray-700 dark:text-gray-300">
-                                            <i class=" fa-solid fa-gear hover:text-red-600"></i>
+                                            <i class=" fa-solid fa-trash-can hover:text-red-600"></i>
                                         </button>
                                     </form>
                                 </span>
@@ -108,6 +137,7 @@
         </tbody>
     </table>
 </div>
+
 @section Scripts {
     <script type='module' vite-src='~/items.js'></script>
     <script type='module' vite-src='~/itemsFilter.js'></script>

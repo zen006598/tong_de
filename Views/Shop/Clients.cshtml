@@ -2,19 +2,25 @@
 @{
     ViewData["Title"] = "Clients";
 }
+<div class='items-center justify-between hidden w-full max-w-md m-auto mb-4 lg:flex'>
+    <a asp-controller="Shop" asp-action="Details" asp-route-id="@Model.ShopId" class='block py-1 pr-4'>
+        <i class="text-xl text-gray-900 fa-solid fa-chevron-left dark:text-white"></i>
+    </a>
+    <a asp-action="Create" asp-controller="Item" asp-route-ShopId="@Model.ShopId" class="blue-700-button">Create
+        Client</a>
+</div>
 
-<div class='fixed bottom-0 left-0 z-10 w-full px-4 py-2 rounded-t-lg bg-gray-50 dark:bg-gray-900 '>
+<div class='fixed bottom-0 left-0 z-10 w-full px-4 py-2 rounded-t-lg bg-gray-50 dark:bg-gray-900 lg:hidden'>
     <div class='flex items-center justify-between w-full max-w-md m-auto'>
         <a asp-controller="Shop" asp-action="Details" asp-route-id="@Model.ShopId" class='block py-1 pr-4'>
             <i class="text-xl text-gray-900 fa-solid fa-chevron-left dark:text-white"></i>
         </a>
-        <a asp-action="Create" asp-controller="Item" asp-route-ShopId="@Model.ShopId"
-            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Create
+        <a asp-action="Create" asp-controller="Item" asp-route-ShopId="@Model.ShopId" class="blue-700-button">Create
             Client</a>
     </div>
 </div>
 
-<div class="relative max-w-md pb-12 m-auto overflow-x-auto rounded-lg shadow-md sm:rounded-lg mb-7">
+<div class="relative max-w-md m-auto mb-12 overflow-x-auto rounded-lg sm:rounded-lg">
     <table class="w-full text-sm text-left text-gray-500 rtl:text-right dark:text-gray-400">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>

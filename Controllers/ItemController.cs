@@ -112,7 +112,7 @@ public class ItemController : Controller
             return View(itemEditVM);
         }
 
-        return RedirectToAction("Details", "Item", new { id = itemToUpdate.Id });
+        return RedirectToAction("Items", "Shop", new { id = itemToUpdate.ShopId });
     }
 
     [HttpGet("Item/Details/{id}")]
@@ -139,7 +139,6 @@ public class ItemController : Controller
 
         try
         {
-
             _dbContext.Items.Remove(item);
             await _dbContext.SaveChangesAsync();
         }

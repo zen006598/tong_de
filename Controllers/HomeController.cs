@@ -4,62 +4,63 @@ using tongDe.Models;
 using tongDe.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using tongDe.Models.ViewModels;
 
 namespace tongDe.Controllers;
-
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
     private readonly ApplicationDbContext _dbContext;
+    private readonly UserManager<ApplicationUser> _userManager;
+
 
     public HomeController(
         ILogger<HomeController> logger,
+        UserManager<ApplicationUser> userManager,
         ApplicationDbContext dbContext)
     {
         _logger = logger;
         _dbContext = dbContext;
+        _userManager = userManager;
     }
+    [Authorize]
+    [HttpGet]
+    public async Task<IActionResult> Index(int? shopId)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        IQueryable<Shop> shopsQuery = _dbContext.Shops.Where(shop => shop.UserId == user.Id);
 
-    public IActionResult Index()
-    {
-        var shops = _dbContext.Shops.ToList();
-        return View(shops);
-    }
-
-    [HttpGet("Create")]
-    public IActionResult Create()
-    {
-        var shop = new Shop();
-        return View(shop);
-    }
-    [HttpPost("Create")]
-    public async Task<IActionResult> Create(Shop shop)
-    {
-        try
+        var homeIndexVM = new HomeIndexVM
         {
-            _dbContext.Shops.Add(shop);
-            await _dbContext.SaveChangesAsync();
+            Shops = shopsQuery.ToList()
+        };
+
+        if (shopId.HasValue && shopId.Value != 0)
+        {
+            homeIndexVM.SelectedShop = await _dbContext.Shops.FindAsync(shopId.Value);
         }
-        catch (DbUpdateException)
+        else
         {
-            return View(shop);
+            homeIndexVM.SelectedShop = homeIndexVM.Shops.FirstOrDefault();
         }
 
-        return RedirectToAction("Index", "Home");
+        return View(homeIndexVM);
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
-        var execeptionHandlerPathFeture = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+        var exceptionHandlerPathFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
 
         var logMessage = $@"
             Request ID: {Activity.Current?.Id ?? HttpContext.TraceIdentifier}
-            Error Message: {execeptionHandlerPathFeture.Error.Message}
-            Source: {execeptionHandlerPathFeture.Error.Source}
-            ErrorPath: {execeptionHandlerPathFeture.Path}
-            StackTrace: {execeptionHandlerPathFeture.Error.StackTrace}
-            InnerException: {execeptionHandlerPathFeture.Error.InnerException}";
+            Error Message: {exceptionHandlerPathFeature.Error.Message}
+            Source: {exceptionHandlerPathFeature.Error.Source}
+            ErrorPath: {exceptionHandlerPathFeature.Path}
+            StackTrace: {exceptionHandlerPathFeature.Error.StackTrace}
+            InnerException: {exceptionHandlerPathFeature.Error.InnerException}";
 
         _logger.LogError(logMessage);
 
@@ -67,7 +68,7 @@ public class HomeController : Controller
             new ErrorViewModel
             {
                 RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
-                ErrorMessage = execeptionHandlerPathFeture.Error.Message,
+                ErrorMessage = exceptionHandlerPathFeature.Error.Message,
             });
     }
 }

@@ -28,7 +28,7 @@ itemAliasCreateButton.addEventListener('click', async (e) => {
     ItemId: itemId
   };
 
-  const createResponse = await createItemAlias(`${import.meta.env.VITE_BASE_URL}/api/Item/${itemId}/ItemAlias/Create`, itemAlias);
+  const createResponse = await createItemAlias(`/api/Item/${itemId}/ItemAlias/Create`, itemAlias);
 
   if (createResponse) {
     successToast(`Item alias '${createResponse.name}' created`);
@@ -91,7 +91,7 @@ itemAliasDeleteButton.addEventListener('click', async (e) => {
 
   if (!isConfirm) return;
 
-  const deleteResponse = await deleteItemAlias(`${import.meta.env.VITE_BASE_URL}/api/ItemAlias/Delete/${itemAliasIdValue}`);
+  const deleteResponse = await deleteItemAlias(`/api/ItemAlias/Delete/${itemAliasIdValue}`);
 
   if (deleteResponse) {
     successToast(`Item alias '${deleteResponse.name}' deleted`);

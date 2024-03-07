@@ -37,14 +37,14 @@
                                 <span class='items-center hidden' id='option-list-@itemCategory.Id'>
                                     <a asp-action="Edit" asp-controller="ItemCategory" asp-route-id="@itemCategory.Id"
                                         class="inline-flex items-center justify-center w-6 h-6 text-sm font-semibold text-gray-800 bg-gray-100 rounded-full me-2 dark:bg-gray-700 dark:text-gray-300">
-                                        <i class=" fa-solid fa-trash-can hover:text-orange-500"></i>
+                                        <i class=" fa-solid fa-gear hover:text-orange-500"></i>
                                     </a>
 
                                     <form asp-action="Delete" asp-controller="ItemCategory" method="post"
                                         asp-route-id="@itemCategory.Id">
                                         <button type='submit'
                                             class="inline-flex items-center justify-center w-6 h-6 text-sm font-semibold text-gray-800 bg-gray-100 rounded-full me-2 dark:bg-gray-700 dark:text-gray-300">
-                                            <i class=" fa-solid fa-gear hover:text-red-600"></i>
+                                            <i class=" fa-solid fa-trash-can hover:text-red-600"></i>
                                         </button>
                                     </form>
                                 </span>

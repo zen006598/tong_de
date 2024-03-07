@@ -26,6 +26,16 @@
         </div>
     </a>
 
+    <a asp-controller="Shop" asp-action="ItemCategories" asp-route-id="@Model?.Shop?.Id"
+        class='block py-3 border-b dark:border-gray-700'>
+        <div class='flex items-center justify-between'>
+            <span>
+                <i class="p-1 mr-3 text-white rounded-md bg-sky-600 fa-solid fa-table-list"></i>
+                Item Categories
+            </span>
+            <i class="fa-solid fa-chevron-right "></i>
+        </div>
+    </a>
 </div>
 
 <div class='hidden w-full m-auto mb-3 text-center max-w-7xl lg:block'>
@@ -34,13 +44,15 @@
             class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
             Items
         </a>
+
         <a href='#'
             class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
             Orders
         </a>
-        <a href='#'
+
+        <a asp-controller="Shop" asp-action="ItemCategories" asp-route-id="@Model?.Shop?.Id"
             class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
-            Messages
+            Item Category
         </a>
     </div>
 

@@ -64,16 +64,26 @@ public class ItemController : Controller
     }
 
     [HttpGet("Item/Edit/{id}")]
-    public IActionResult Edit(int id)
+    public async Task<IActionResult> Edit(int id)
     {
-        var item = _dbContext.Items
+        var item = await _dbContext.Items
             .Include(i => i.ItemAliases)
-            .FirstOrDefault(item => item.Id == id);
-        if (item is null) return NotFound();
+            .FirstOrDefaultAsync(item => item.Id == id);
+
+        if (item is null)
+        {
+            _logger.LogError("Item no found");
+            return NotFound();
+        }
+
         var itemEditVM = _mapper.Map<ItemEditVM>(item);
+
+        itemEditVM.ItemCategories = await _dbContext.ItemCategories
+            .Where(ic => ic.ShopId == item.ShopId)
+            .ToListAsync();
+
         return View(itemEditVM);
     }
-
     [HttpPost("Item/Edit/{id}")]
     public async Task<IActionResult> Edit(int id, ItemEditVM itemEditVM)
     {
@@ -81,7 +91,11 @@ public class ItemController : Controller
 
         var itemToUpdate = await _dbContext.Items.FirstOrDefaultAsync(item => item.Id == id);
 
-        if (itemToUpdate is null) return NotFound();
+        if (itemToUpdate is null)
+        {
+            _logger.LogError("Item no found");
+            return NotFound();
+        }
 
         if (itemEditVM.ShopId != itemToUpdate.ShopId) return NotFound();
 
@@ -94,7 +108,7 @@ public class ItemController : Controller
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, $"Error occurred while update a client");
+            _logger.LogError(ex, $"Error occurred while update a item");
             return View(itemEditVM);
         }
 

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using tongDe.Data;
 using tongDe.Models;
 using tongDe.Models.ViewModels;
+using Newtonsoft.Json;
 
 namespace tongDe.Controllers;
 
@@ -113,18 +114,37 @@ public class ShopController : Controller
     }
 
     [HttpGet("{Id}/Items")]
-    public async Task<IActionResult> Items(int? id)
+    public async Task<IActionResult> Items(int? id, int? itemCategoryId)
     {
-        var shop = await _dbContext.Shops
-                              .Include(s => s.Items)
-                              .FirstOrDefaultAsync(s => s.Id == id);
-        if (shop is null)
+        if (!id.HasValue || id == 0) return NotFound();
+
+        ViewData["itemCategoryFilter"] = itemCategoryId ?? 0;
+
+        IQueryable<Item> query = _dbContext.Items.Where(i => i.ShopId == id);
+
+        if (itemCategoryId.HasValue && itemCategoryId != 0)
         {
-            _logger.LogError($"Shop Id:({id}) is not found");
-            return NotFound();
+            query = query.Where(i => i.ItemCategoryId == itemCategoryId.Value);
         }
 
-        var itemViewModel = _mapper.Map<ItemsVM>(shop);
+        var itemViewModels = await query
+              .Select(i => new ItemWithItemCategoryVM
+              {
+                  Id = i.Id,
+                  Name = i.Name,
+                  ItemCategoryName = i.ItemCategory.Name
+              }).ToListAsync();
+
+        var itemCategories = await _dbContext.ItemCategories
+            .Where(ic => ic.ShopId == id)
+            .ToListAsync();
+
+        var itemViewModel = new ItemsVM
+        {
+            ShopId = (int)id,
+            Items = itemViewModels,
+            ItemCategories = itemCategories
+        };
 
         return View(itemViewModel);
     }
@@ -143,6 +163,23 @@ public class ShopController : Controller
         var clientViewModel = _mapper.Map<ClientVM>(shop);
 
         return View(clientViewModel);
+    }
+
+    [HttpGet("{Id}/ItemCategories")]
+    public async Task<IActionResult> ItemCategories(int? id)
+    {
+        var shop = await _dbContext.Shops
+                      .Include(s => s.ItemCategories)
+                      .FirstOrDefaultAsync(s => s.Id == id);
+        if (shop is null)
+        {
+            _logger.LogError($"Shop Id:({id}) is not found");
+            return NotFound();
+        }
+
+        var itemCategoryViewModel = _mapper.Map<ItemCategoryVM>(shop);
+
+        return View(itemCategoryViewModel);
     }
 
 

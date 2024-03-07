@@ -12,7 +12,8 @@ export default {
                 itemCreate: 'Assets/itemCreate.js',
                 itemEdit: 'Assets/itemEdit.js',
                 izitoast: 'Assets/izitoast.js',
-                items: 'Assets/items.js'
+                items: 'Assets/items.js',
+                itemsFilter: 'Assets/itemsFilter.js'
             },
             output: {
                 entryFileNames: '[name].js',

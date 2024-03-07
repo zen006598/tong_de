@@ -14,53 +14,80 @@
     </div>
 </div>
 
+<div class='max-w-md m-auto mb-3'>
+    <form asp-controller="Shop" asp-action="Items" method='get' id='filter-form'>
+        <div>
+            <select id='item-category-select' name='itemCategoryId'
+                class='w-40 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'>
+                @if (Model.ItemCategories is null)
+                {
+                    <option value='-1' disabled>Do no set item category</option>
+                }
+                else
+                {
+                    <option value='0'>All</option>
+                    @foreach (ItemCategory itemCategory in Model.ItemCategories)
+                    {
+                        <option value='@itemCategory.Id'>
+                            @itemCategory.Name
+                        </option>
+                    }
+                }
+            </select>
+        </div>
+    </form>
+</div>
+
 <div class="relative max-w-md m-auto overflow-x-auto rounded-lg shadow-md sm:rounded-lg mb-7" id='main-item-section'>
     <table class="w-full text-sm text-left text-gray-500 rtl:text-right dark:text-gray-400">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" class="w-2/12 py-3 pl-3">
+                    Category
+                </th>
+                <th scope="col" class="w-10/12 pl-4">
                     NAME
                 </th>
 
-                <th scope="col" class="px-6 py-3">
-                    <span class="sr-only">ACTION</span>
-                </th>
             </tr>
         </thead>
-        <tbody id='item-table'>
-            @if (Model.Items is not null)
+        <tbody id='item-table' class="bg-white dark:bg-gray-800">
+            @if (Model.Items is not null && Model.Items.Count > 0)
             {
-                @foreach (var item in Model?.Items)
+                @foreach (var item in Model.Items)
                 {
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-
-                        <td class="px-6 py-4">
-                            <a asp-action="Details" asp-controller="Item" asp-route-id="@item.Id" class='link-text-2'>
+                    <tr class="items-center w-full border-b dark:border-gray-700">
+                        @if (item.ItemCategoryName is not null)
+                        {
+                            <td class='h-full py-3 text-center text-white rounded-l-lg bg-sky-600'>
+                                @item.ItemCategoryName
+                            </td>
+                        }
+                        else
+                        {
+                            <td class='w-1/12'></td>
+                        }
+                        <td class="flex items-center justify-between h-full pl-4">
+                            <a asp-action="Details" asp-controller="Item" asp-route-id="@item.Id">
                                 @item.Name
                             </a>
-                        </td>
-                        <td class="gap-1 px-6 py-4 text-right ">
-                            <i class="px-4 py-2 fa-solid fa-chevron-down option-list-open-button"
-                                id='option-list-open-button-@item.Id' data-option-display-status='false'></i>
-                        </td>
-                    </tr>
-                    <tr class="hidden w-full bg-white border-b dark:bg-gray-800 dark:border-gray-700 option-list"
-                        id='option-list-@item.Id'>
-                        <td colspan="2">
-                            <div class="flex items-center justify-end w-full gap-3 px-4 py-2">
+                            <span class='flex'>
+                                <span class='items-center hidden' id='option-list-@item.Id'>
+                                    <a asp-action="Edit" asp-controller="Item" asp-route-id="@item.Id"
+                                        class="inline-flex items-center justify-center w-6 h-6 text-sm font-semibold text-gray-800 bg-gray-100 rounded-full me-2 dark:bg-gray-700 dark:text-gray-300">
+                                        <i class=" fa-solid fa-trash-can hover:text-orange-500"></i>
+                                    </a>
 
-                                <form asp-action="Delete" asp-controller="Item" method="post" asp-route-id="@item.Id">
-                                    <button type="submit"
-                                        class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
-                                        <i class="fa-solid fa-trash-can"></i>
-                                    </button>
-                                </form>
-
-                                <a class="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:focus:ring-yellow-900"
-                                    asp-action="Edit" asp-controller="Item" asp-route-id="@item.Id">
-                                    <i class="fa-solid fa-gear"></i>
-                                </a>
-                            </div>
+                                    <form asp-action="Delete" asp-controller="Item" method="post" asp-route-id="@item.Id">
+                                        <button type='submit'
+                                            class="inline-flex items-center justify-center w-6 h-6 text-sm font-semibold text-gray-800 bg-gray-100 rounded-full me-2 dark:bg-gray-700 dark:text-gray-300">
+                                            <i class=" fa-solid fa-gear hover:text-red-600"></i>
+                                        </button>
+                                    </form>
+                                </span>
+                                <i class="px-4 py-3 fa-solid fa-chevron-left option-list-open-button"
+                                    id='option-list-open-button-@item.Id' data-option-display-status='false'></i>
+                            </span>
                         </td>
                     </tr>
                 }
@@ -68,8 +95,13 @@
             else
             {
                 <tr class="w-full bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                    <td colspan="2" class="px-6 py-4">
-                        <span class='text-xl font-bold text-red-600'>Items no found</span>
+                    <td colspan="2">
+                        <div class="p-4 text-sm text-center text-red-600 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+                            role="alert">
+                            <span>
+                                No items found.
+                            </span>
+                        </div>
                     </td>
                 </tr>
             }
@@ -78,4 +110,5 @@
 </div>
 @section Scripts {
     <script type='module' vite-src='~/items.js'></script>
+    <script type='module' vite-src='~/itemsFilter.js'></script>
 }

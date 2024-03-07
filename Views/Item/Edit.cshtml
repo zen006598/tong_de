@@ -34,6 +34,25 @@
             required />
         <span asp-validation-for="Unit" class="text-red-600"></span>
     </div>
+    <div class="mb-5">
+        <label for="ItemCategoryId" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Item
+            Category</label>
+        <select asp-for="ItemCategoryId"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            @if (Model.ItemCategories is null)
+            {
+                <option disabled>Do not set the item category</option>
+            }
+            else
+            {
+                <option value="">Select item category</option>
+                @foreach (var itemCategory in Model.ItemCategories)
+                {
+                    <option value="@itemCategory.Id">@itemCategory.Name</option>
+                }
+            }
+        </select>
+    </div>
 
     <div class='flex flex-wrap items-center gap-3 mb-5'>
         @if (Model.ItemAliases is not null)
@@ -65,7 +84,6 @@
 </form>
 
 <div class="fixed left-0 z-10 w-full px-4 py-2 rounded-t-lg bottom-14 bg-gray-50 dark:bg-gray-900 ">
-
     <form class='flex items-center justify-between max-w-md gap-3 m-auto'>
         <input type="hidden" disabled id='item-alias-id'>
         <button type="submit" id=' item-alias-create-button'

@@ -12,4 +12,5 @@ public class Shop
     public virtual ApplicationUser User { get; set; } = null!;
     public ICollection<Client> Clients { get; } = new List<Client>();
     public ICollection<Item> Items { get; } = new List<Item>();
+    public ICollection<ItemCategory> ItemCategories { get; } = new List<ItemCategory>();
 }

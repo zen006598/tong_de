@@ -3,11 +3,9 @@ const mainItemSection = document.querySelector('#main-item-section');
 const optionBarStatusMap = {
   true: {
     iconClass: 'fa-xmark'
-    , visibilityClass: 'hidden'
   },
   false: {
-    iconClass: 'fa-chevron-down',
-    visibilityClass: 'hidden'
+    iconClass: 'fa-chevron-left'
   }
 };
 
@@ -34,16 +32,16 @@ function setStatus(object) {
 }
 
 function setOption(object) {
-  const optionStaus = optionBarStatusMap[object.dataset.optionDisplayStatus];
+  const optionStatus = optionBarStatusMap[object.dataset.optionDisplayStatus];
 
-  object.classList = `fa-solid ${optionStaus.iconClass} option-list-open-button px-4 py-2`;
+  object.classList = `fa-solid ${optionStatus.iconClass} option-list-open-button px-4 py-3`;
 
   const optionId = object.id.match(/\d+$/)[0]
   const optionList = document.querySelector(`#option-list-${optionId}`)
 
   if (object.dataset.optionDisplayStatus === 'true') {
-    optionList.classList.remove(optionStaus.visibilityClass)
+    optionList.classList.replace('hidden', 'flex')
   } else {
-    optionList.classList.add(optionStaus.visibilityClass)
+    optionList.classList.replace('flex', 'hidden')
   }
 }

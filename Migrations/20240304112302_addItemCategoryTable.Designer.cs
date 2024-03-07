@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using tongDe.Data;
 
@@ -11,9 +12,11 @@ using tongDe.Data;
 namespace tongDe.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240304112302_addItemCategoryTable")]
+    partial class addItemCategoryTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -263,9 +266,6 @@ namespace tongDe.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ItemCategoryId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -281,8 +281,6 @@ namespace tongDe.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ItemCategoryId");
 
                     b.HasIndex("ShopId");
 
@@ -423,17 +421,11 @@ namespace tongDe.Migrations
 
             modelBuilder.Entity("tongDe.Models.Item", b =>
                 {
-                    b.HasOne("tongDe.Models.ItemCategory", "ItemCategory")
-                        .WithMany("Items")
-                        .HasForeignKey("ItemCategoryId");
-
                     b.HasOne("tongDe.Models.Shop", "Shop")
                         .WithMany("Items")
                         .HasForeignKey("ShopId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("ItemCategory");
 
                     b.Navigation("Shop");
                 });
@@ -479,11 +471,6 @@ namespace tongDe.Migrations
             modelBuilder.Entity("tongDe.Models.Item", b =>
                 {
                     b.Navigation("ItemAliases");
-                });
-
-            modelBuilder.Entity("tongDe.Models.ItemCategory", b =>
-                {
-                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("tongDe.Models.Shop", b =>

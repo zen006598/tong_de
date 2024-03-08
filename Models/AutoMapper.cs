@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 using tongDe.Models.ViewModels;
 
 namespace tongDe.Models;
@@ -20,6 +21,8 @@ public class AutoMapper : Profile
     CreateMap<Shop, ItemsVM>().ForMember(dest => dest.ShopId, opt => opt.MapFrom(src => src.Id));
     CreateMap<Shop, ClientVM>().ForMember(dest => dest.ShopId, opt => opt.MapFrom(src => src.Id));
     CreateMap<Shop, ItemCategoryVM>().ForMember(dest => dest.ShopId, opt => opt.MapFrom(src => src.Id));
+    CreateMap<Shop, ShopEditVM>();
+    CreateMap<ShopEditVM, Shop>();
 
     CreateMap<ItemAliasCreateVM, ItemAlias>();
 

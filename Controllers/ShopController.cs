@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using tongDe.Data;
 using tongDe.Models;
 using tongDe.Models.ViewModels;
-using Newtonsoft.Json;
 
 namespace tongDe.Controllers;
 [Authorize]
@@ -83,6 +83,39 @@ public class ShopController : Controller
 
         return RedirectToAction("Index", "Shop");
     }
+    [HttpGet("Edit/{Id}")]
+    public async Task<IActionResult> Edit(int id)
+    {
+
+        var shopToUpdate = await _dbContext.Shops.FirstOrDefaultAsync(s => s.Id == id);
+        if (shopToUpdate is null) return NotFound();
+        var shopEditVM = _mapper.Map<ShopEditVM>(shopToUpdate);
+        return View(shopEditVM);
+    }
+
+    [HttpPost("Edit/{Id}"), ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(int id, ShopEditVM shopEditVM)
+    {
+        var shopToUpdate = await _dbContext.Shops.FirstOrDefaultAsync(s => s.Id == id);
+
+        if (shopToUpdate is null) return NotFound();
+
+        _mapper.Map(shopEditVM, shopToUpdate);
+
+        try
+        {
+            _dbContext.Update(shopToUpdate);
+            await _dbContext.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, $"Error occurred while update a shop");
+            return View(shopEditVM);
+        }
+
+        return RedirectToAction("Details", "Shop", new { id = shopToUpdate.Id });
+    }
+
     [HttpGet("Details/{id}")]
     public async Task<IActionResult> Details(int id)
     {
@@ -181,6 +214,13 @@ public class ShopController : Controller
 
         return View(itemCategoryViewModel);
     }
+
+    [HttpPost("CreateToken")]
+    public async Task<IActionResult> CreateToken()
+    {
+        return View();
+    }
+
 
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -57,7 +57,7 @@ public class ShopController : Controller
 
         Shop newShop = new Shop
         {
-            UserId = userId
+            UserId = userId,
         };
 
         return View(newShop);
@@ -69,7 +69,7 @@ public class ShopController : Controller
         var user = await _userManager.GetUserAsync(User);
 
         if (user is null) return RedirectToAction("Login", "Account");
-
+        shop.Token = Guid.NewGuid();
         try
         {
             user.Shops.Add(shop);
@@ -214,14 +214,6 @@ public class ShopController : Controller
 
         return View(itemCategoryViewModel);
     }
-
-    [HttpPost("CreateToken")]
-    public async Task<IActionResult> CreateToken()
-    {
-        return View();
-    }
-
-
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()

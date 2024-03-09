@@ -87,28 +87,31 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var Client in Model.Clients)
+                    @if (Model?.Clients is not null)
                     {
-                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                        @foreach (var Client in Model.Clients)
+                        {
+                            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
 
-                            <td class="px-6 py-4">
-                                <a asp-action="Details" asp-controller="Client" asp-route-id="@Client.Id"
-                                    class='link-text-2'>
-                                    @Client.Name
-                                </a>
-                            </td>
-                            <td class="px-6 py-4">
-                                <span
-                                    class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Order</span>
+                                <td class="px-6 py-4">
+                                    <a asp-action="Details" asp-controller="Client" asp-route-id="@Client.Id"
+                                        class='link-text-2'>
+                                        @Client.Name
+                                    </a>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span
+                                        class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Order</span>
 
-                            </td>
-                            <td class="px-6 py-4 text-right">
-                                <a class="link-text" asp-action="Edit" asp-controller="Client" asp-route-id="@Client.Id"
-                                    method='post'>
-                                    <i class="fa-solid fa-gear"></i>
-                                </a>
-                            </td>
-                        </tr>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <a class="link-text" asp-action="Edit" asp-controller="Client" asp-route-id="@Client.Id"
+                                        method='post'>
+                                        <i class="fa-solid fa-gear"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
                     }
                 </tbody>
             </table>

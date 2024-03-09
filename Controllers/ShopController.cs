@@ -34,12 +34,7 @@ public class ShopController : Controller
     {
 
         var user = await _userManager.GetUserAsync(User);
-        if (user is null)
-        {
-            _logger.LogError($"Can not found use by id (ID: {user.Id}.)");
-            throw new Exception($"Can not found use by id (ID: {user.Id}.)");
-        }
-
+        if (user is null) return NotFound();
         var Shops = await _dbContext.Shops.Where(s => s.UserId == user.Id).ToListAsync();
         return View(Shops);
     }

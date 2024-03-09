@@ -34,19 +34,22 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var client in Model?.Clients)
+            @if (Model.Clients is not null)
             {
-                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                @foreach (var client in Model.Clients)
+                {
+                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
 
-                    <td class="px-6 py-4">
-                        <a asp-action="Details" asp-controller="Client" asp-route-id="@client.Id" class='link-text-2'>
-                            @client.Name
-                        </a>
-                    </td>
-                    <td class="gap-1 px-6 py-4 text-right">
-                        <a class="link-text" asp-action="Edit" asp-controller="Client" asp-route-id="@client.Id">Edit</a>
-                    </td>
-                </tr>
+                        <td class="px-6 py-4">
+                            <a asp-action="Details" asp-controller="Client" asp-route-id="@client.Id" class='link-text-2'>
+                                @client.Name
+                            </a>
+                        </td>
+                        <td class="gap-1 px-6 py-4 text-right">
+                            <a class="link-text" asp-action="Edit" asp-controller="Client" asp-route-id="@client.Id">Edit</a>
+                        </td>
+                    </tr>
+                }
             }
         </tbody>
     </table>

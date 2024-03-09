@@ -30,6 +30,7 @@ public class HomeController : Controller
     public async Task<IActionResult> Index(int? shopId)
     {
         var user = await _userManager.GetUserAsync(User);
+        if (user is null) return NotFound();
         IQueryable<Shop> shopsQuery = _dbContext.Shops.Where(shop => shop.UserId == user.Id);
 
         var homeIndexVM = new HomeIndexVM
@@ -56,11 +57,11 @@ public class HomeController : Controller
 
         var logMessage = $@"
             Request ID: {Activity.Current?.Id ?? HttpContext.TraceIdentifier}
-            Error Message: {exceptionHandlerPathFeature.Error.Message}
-            Source: {exceptionHandlerPathFeature.Error.Source}
-            ErrorPath: {exceptionHandlerPathFeature.Path}
-            StackTrace: {exceptionHandlerPathFeature.Error.StackTrace}
-            InnerException: {exceptionHandlerPathFeature.Error.InnerException}";
+            Error Message: {exceptionHandlerPathFeature?.Error.Message}
+            Source: {exceptionHandlerPathFeature?.Error.Source}
+            ErrorPath: {exceptionHandlerPathFeature?.Path}
+            StackTrace: {exceptionHandlerPathFeature?.Error.StackTrace}
+            InnerException: {exceptionHandlerPathFeature?.Error.InnerException}";
 
         _logger.LogError(logMessage);
 
@@ -68,7 +69,7 @@ public class HomeController : Controller
             new ErrorViewModel
             {
                 RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
-                ErrorMessage = exceptionHandlerPathFeature.Error.Message,
+                ErrorMessage = exceptionHandlerPathFeature?.Error.Message,
             });
     }
 }

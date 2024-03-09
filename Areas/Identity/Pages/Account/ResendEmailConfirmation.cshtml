@@ -1,25 +1,26 @@
 ﻿@page
-@model ForgotPasswordModel
+@model ResendEmailConfirmationModel
 @{
-    ViewData["Title"] = "Forgot your password?";
+    ViewData["Title"] = "Resend email confirmation";
 }
+
 <div
     class="max-w-sm m-auto bg-white rounded-lg shadow dark:border md:mt-0 xl:p-0 dark:bg-gray-800 dark:border-gray-700">
     <div class="max-w-sm p-6 m-auto space-y-4 md:space-y-6 sm:p-8">
-
-        <h1 class='mb-3 text-title-1'>Enter your email</h1>
-
+        <h1 class='mb-3 text-title-1'>
+            @ViewData["Title"]
+        </h1>
         <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-red-500" role="alert"></div>
+            <div asp-validation-summary="All" class="text-text-500" role="alert"></div>
             <div class="mb-5">
                 <label asp-for="Input.Email" class="block mb-2 text-sm font-medium text"></label>
-                <input asp-for="Input.Email" class="w-full input-blue" autocomplete="username" aria-required="true"
+                <input asp-for="Input.Email" class="w-full input-blue" aria-required="true"
                     placeholder="name@example.com" />
                 <div>
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    <span asp-validation-for="Input.Email" class="text-text-500"></span>
                 </div>
             </div>
-            <button type="submit" class="blue-700-button">Reset Password</button>
+            <button type="submit" class="blue-700-button">Resend</button>
         </form>
     </div>
 </div>

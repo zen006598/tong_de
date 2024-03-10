@@ -5,7 +5,7 @@ namespace tongDe.Models.ViewModels;
 public class ItemCreateVM
 {
     public int Id { get; set; }
-    [Required(ErrorMessage = "Name is required"), UniqueItemName]
+    [Required(ErrorMessage = "Name is required"), UniqueItemAndItemAliasName]
     public string? Name { get; set; }
     public string? PinyIn { get; set; }
     [Required]

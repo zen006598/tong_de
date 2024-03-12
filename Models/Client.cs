@@ -8,7 +8,7 @@ public class Client
     public string? Name { get; set; }
     public string? Phone { get; set; }
     public string? LineId { get; set; }
-    public DateTime? DeleteTime { get; set; }
+    public bool Cancel { get; set; }
     public int ShopId { get; set; }
     public Shop Shop { get; set; } = null!;
 }

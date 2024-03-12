@@ -179,9 +179,13 @@ public class ShopController : Controller
     [HttpGet("{Id}/Clients")]
     public async Task<IActionResult> Clients(int? id)
     {
-        var shop = await _dbContext.Shops
-                      .Include(s => s.Clients)
-                      .FirstOrDefaultAsync(s => s.Id == id);
+        var shop = await _dbContext.Shops.Where(s => s.Id == id)
+                                         .Select(s => new ClientVM
+                                         {
+                                             ShopId = s.Id,
+                                             Clients = s.Clients.Where(c => !c.Cancel).ToList()
+                                         })
+                                         .FirstOrDefaultAsync();
         if (shop is null)
         {
             _logger.LogError($"Shop Id:({id}) is not found");

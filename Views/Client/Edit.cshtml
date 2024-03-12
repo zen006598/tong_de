@@ -2,40 +2,61 @@
 @{
     ViewData["Title"] = "Edit";
 }
-
-<form method="post" asp-controller="Client" asp-action="Edit" asp-antiforgery="true" class="w-full max-w-md m-auto">
-    <div class="mb-5">
-        <label for="Name"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white after:content-['*'] after:ml-0.5 after:text-red-500">Name</label>
-        <input type="text" asp-for="Name"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            required />
-        <span asp-validation-for="Name" class="text-red-600"></span>
-    </div>
-
-    <div class="mb-5">
-        <label for="Phone" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone</label>
-        <input type="text" asp-for="Phone"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            pattern="^09\d{8}$" placeholder="0912122122" />
-        <span asp-validation-for="Phone" class="text-red-600"></span>
-    </div>
-
-    <div class="mb-5">
-        <label for="LineId" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">LineID</label>
-        <input type="text" asp-for="LineId"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
-    </div>
-
-    <div class='fixed bottom-0 left-0 z-10 w-full px-4 py-2 rounded-t-lg bg-gray-50 dark:bg-gray-900 '>
-        <div class='flex items-center justify-between max-w-md m-auto'>
-            <a asp-controller="Shop" asp-action="Details" asp-route-id="@Model.ShopId"
-                class="block text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
-                <i class="fa-solid fa-arrow-left"></i>
-            </a>
-
-            <button type="submit"
-                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Update</button>
+<div class='max-w-md m-auto'>
+    <div class='flex justify-end'>
+        <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar"
+            class="px-3 py-2 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 dark:text-white md:dark:hover:text-blue-500 dark:focus:text-white dark:border-gray-700 dark:hover:bg-gray-700 md:dark:hover:bg-transparent">
+            <i class="fa-solid fa-ellipsis-vertical"></i>
+        </button>
+        <div id="dropdownNavbar"
+            class="z-10 hidden font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+            <ul class="py-2 text-sm text-gray-700 dark:text-gray-400" aria-labelledby="dropdownLargeButton">
+                <li>
+                    <form asp-controller="Client" asp-action="Cancel" method="Post">
+                        <input type='hidden' asp-for='@Model.Id' />
+                        <button type="submit"
+                            class="block w-full px-4 py-2 text-left text-red-500 hover:bg-gray-100 dark:hover:bg-gray-600">
+                            <i class="mr-3 fa-solid fa-xmark"></i>Cancel
+                        </button>
+                    </form>
+                </li>
+            </ul>
         </div>
     </div>
-</form>
+    <form method="post" asp-controller="Client" asp-action="Edit" asp-antiforgery="true">
+        <div class="mb-5">
+            <label for="Name"
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white after:content-['*'] after:ml-0.5 after:text-red-500">Name</label>
+            <input type="text" asp-for="Name"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                required />
+            <span asp-validation-for="Name" class="text-red-600"></span>
+        </div>
+
+        <div class="mb-5">
+            <label for="Phone" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone</label>
+            <input type="text" asp-for="Phone"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                pattern="^09\d{8}$" placeholder="0912122122" />
+            <span asp-validation-for="Phone" class="text-red-600"></span>
+        </div>
+
+        <div class="mb-5">
+            <label for="LineId" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">LineID</label>
+            <input type="text" asp-for="LineId"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+        </div>
+
+        <div class='fixed bottom-0 left-0 z-10 w-full px-4 py-2 rounded-t-lg bg-gray-50 dark:bg-gray-900 '>
+            <div class='flex items-center justify-between max-w-md m-auto'>
+                <a asp-controller="Shop" asp-action="Details" asp-route-id="@Model.ShopId"
+                    class="block text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </a>
+
+                <button type="submit"
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Update</button>
+            </div>
+        </div>
+    </form>
+</div>

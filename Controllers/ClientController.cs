@@ -54,7 +54,7 @@ public class ClientController : Controller
             return View(client);
         }
 
-        return RedirectToAction("Details", "Shop", new { id = shopId });
+        return RedirectToAction("Clients", "Shop", new { id = shopId });
     }
 
     [HttpGet("Client/Edit/{id}")]
@@ -88,6 +88,26 @@ public class ClientController : Controller
 
         return RedirectToAction("Details", "Shop", new { id = clientToUpdate.ShopId });
     }
+    [HttpPost("Client/Cancel")]
+    public async Task<IActionResult> Cancel(int id)
+    {
+        var clientToCancel = await _dbContext.Clients.FirstOrDefaultAsync(c => c.Id == id);
+        if (clientToCancel is null) return NotFound();
+        clientToCancel.Cancel = true;
+
+        try
+        {
+            await _dbContext.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, $"Error occurred while cancel a client");
+            return View(clientToCancel);
+        }
+
+        return RedirectToAction("Details", "Shop", new { id = clientToCancel.ShopId });
+    }
+
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()

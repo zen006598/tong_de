@@ -4,6 +4,7 @@ namespace tongDe.Models.ViewModels;
 
 public class ClientEditVM
 {
+    public int Id { get; set; }
     [Required(ErrorMessage = "Name is required.")]
     public string? Name { get; set; }
     [RegularExpression(@"^09\d{8}$", ErrorMessage = "Mobile phone format error.")]

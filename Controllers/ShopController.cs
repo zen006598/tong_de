@@ -123,7 +123,7 @@ public class ShopController : Controller
         }
 
         var clients = await _dbContext.Clients
-              .Where(c => c.ShopId == id)
+              .Where(c => c.ShopId == id && !c.Cancel)
               .ToListAsync();
 
         if (clients is null)

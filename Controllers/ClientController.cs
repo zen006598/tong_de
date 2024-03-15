@@ -4,23 +4,26 @@ using AutoMapper;
 using tongDe.Models.ViewModels;
 using tongDe.Models;
 using Microsoft.EntityFrameworkCore;
+using tongDe.Data.Repository;
 namespace tongDe.Controllers;
 
 public class ClientController : Controller
 {
     private readonly ILogger<ClientController> _logger;
     private readonly ApplicationDbContext _dbContext;
-
+    private readonly IClientRepository _clientRepository;
     private readonly IMapper _mapper;
 
     public ClientController(
         ILogger<ClientController> logger,
         ApplicationDbContext dbContext,
-        IMapper mapper)
+        IMapper mapper,
+        IClientRepository clientRepository)
     {
         _logger = logger;
         _dbContext = dbContext;
         _mapper = mapper;
+        _clientRepository = clientRepository;
     }
 
     [HttpGet("Shop/{ShopId}/Client/Create")]
@@ -32,44 +35,46 @@ public class ClientController : Controller
 
     [HttpPost("Shop/{ShopId}/Client/Create")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(int shopId, ClientCreateVM client)
+    public async Task<IActionResult> Create(int shopId, ClientCreateVM clientToCreate)
     {
         var shop = await _dbContext.Shops.FindAsync(shopId);
         if (shop is null)
         {
             _logger.LogError($"Shop with ID {shopId} not found!", shopId);
-            return View(client);
+            return View(clientToCreate);
         }
 
         try
         {
-            var clients = _mapper.Map<Client>(client);
-
-            _dbContext.Add(clients);
-            await _dbContext.SaveChangesAsync();
+            var client = _mapper.Map<Client>(clientToCreate);
+            await _clientRepository.AddAsync(client);
+            await _clientRepository.SaveAsync();
         }
         catch (DbUpdateException ex)
         {
             _logger.LogError(ex, $"Error occurred while creating a client for ShopId {shopId}", shopId);
-            return View(client);
+            return View(clientToCreate);
         }
 
-        return RedirectToAction("Clients", "Shop", new { id = shopId });
+        return RedirectToAction("Details", "Shop", new { id = shopId });
     }
 
     [HttpGet("Client/Edit/{id}")]
-    public IActionResult Edit(int id)
+    public async Task<IActionResult> Edit(int id)
     {
-        var client = _dbContext.Clients.FirstOrDefault(c => c.Id == id);
+        var client = await _clientRepository.GetAsync(c => c.Id == id);
+
         if (client is null) return NotFound();
+
         var clientViewModel = _mapper.Map<ClientEditVM>(client);
+
         return View(clientViewModel);
     }
     [HttpPost("Client/Edit/{id}")]
     public async Task<IActionResult> Edit(int id, ClientEditVM client)
     {
         if (!ModelState.IsValid) return View(client);
-        var clientToUpdate = await _dbContext.Clients.FirstOrDefaultAsync(c => c.Id == id);
+        var clientToUpdate = await _clientRepository.GetAsync(c => c.Id == id);
 
         if (clientToUpdate is null) return NotFound();
 
@@ -77,8 +82,8 @@ public class ClientController : Controller
 
         try
         {
-            _dbContext.Update(clientToUpdate);
-            await _dbContext.SaveChangesAsync();
+            _clientRepository.Update(clientToUpdate);
+            await _clientRepository.SaveAsync();
         }
         catch (DbUpdateException ex)
         {
@@ -91,13 +96,13 @@ public class ClientController : Controller
     [HttpPost("Client/Cancel")]
     public async Task<IActionResult> Cancel(int id)
     {
-        var clientToCancel = await _dbContext.Clients.FirstOrDefaultAsync(c => c.Id == id);
+        var clientToCancel = await _clientRepository.GetAsync(c => c.Id == id);
         if (clientToCancel is null) return NotFound();
         clientToCancel.Cancel = true;
 
         try
         {
-            await _dbContext.SaveChangesAsync();
+            await _clientRepository.SaveAsync();
         }
         catch (DbUpdateException ex)
         {

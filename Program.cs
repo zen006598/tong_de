@@ -5,6 +5,7 @@ using Vite.AspNetCore.Extensions;
 using Serilog;
 using Microsoft.AspNetCore.Identity;
 using tongDe.Models;
+using tongDe.Data.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 Log.Information("Starting web host");
@@ -39,6 +40,9 @@ try
     {
         options.Server.AutoRun = true;
     });
+
+    builder.Services.AddScoped<IClientRepository, ClientRepository>();
+
     //log
     builder.Host.UseSerilog();
 

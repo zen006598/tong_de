@@ -1,7 +1,8 @@
 using System.ComponentModel.DataAnnotations;
+using tongDe.Data;
 
 namespace tongDe.Models;
-public class Client
+public class Client : IEntity
 {
     public int Id { get; set; }
     [Required(ErrorMessage = "Name is required")]

@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using tongDe.Data;
+using tongDe.Data.Repository;
 using tongDe.Models;
 using tongDe.Models.ViewModels;
 
@@ -15,27 +15,33 @@ public class ShopController : Controller
 {
     private readonly ILogger<ShopController> _logger;
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly ApplicationDbContext _dbContext;
     private readonly IMapper _mapper;
+    private readonly IShopRepository _shop;
+    private readonly IClientRepository _client;
+    private readonly ApplicationDbContext _dbContext;
 
     public ShopController(
         ILogger<ShopController> logger,
         UserManager<ApplicationUser> userManager,
-        ApplicationDbContext dbContext,
-        IMapper mapper)
+        IMapper mapper,
+        IShopRepository shopRepository,
+        IClientRepository clientRepository,
+        ApplicationDbContext dbContext)
     {
         _logger = logger;
         _userManager = userManager;
-        _dbContext = dbContext;
         _mapper = mapper;
+        _shop = shopRepository;
+        _client = clientRepository;
+        _dbContext = dbContext;
     }
     [HttpGet("Index")]
     public async Task<IActionResult> Index()
     {
-
         var user = await _userManager.GetUserAsync(User);
         if (user is null) return NotFound();
-        var Shops = await _dbContext.Shops.Where(s => s.UserId == user.Id).ToListAsync();
+
+        var Shops = await _shop.GetShops(user.Id);
         return View(Shops);
     }
 
@@ -43,18 +49,14 @@ public class ShopController : Controller
     public IActionResult Create()
     {
         var userId = _userManager.GetUserId(User);
-
+        //TODO: make this method in base controller
         if (string.IsNullOrEmpty(userId))
         {
             _logger.LogError($"Can not found use by id (ID: {userId}.)");
             throw new Exception($"Can not found use by id (ID: {userId}.)");
         }
 
-        Shop newShop = new Shop
-        {
-            UserId = userId,
-        };
-
+        Shop newShop = new Shop { UserId = userId };
         return View(newShop);
     }
 
@@ -68,7 +70,7 @@ public class ShopController : Controller
         try
         {
             user.Shops.Add(shop);
-            await _dbContext.SaveChangesAsync();
+            await _shop.SaveAsync();
         }
         catch (DbUpdateException ex)
         {
@@ -82,16 +84,17 @@ public class ShopController : Controller
     public async Task<IActionResult> Edit(int id)
     {
 
-        var shopToUpdate = await _dbContext.Shops.FirstOrDefaultAsync(s => s.Id == id);
-        if (shopToUpdate is null) return NotFound();
-        var shopEditVM = _mapper.Map<ShopEditVM>(shopToUpdate);
-        return View(shopEditVM);
+        var shop = await _shop.GetAsync(s => s.Id == id);
+        if (shop is null) return NotFound();
+
+        var shopToUpdate = _mapper.Map<ShopEditVM>(shop);
+        return View(shopToUpdate);
     }
 
     [HttpPost("Edit/{Id}"), ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, ShopEditVM shopEditVM)
     {
-        var shopToUpdate = await _dbContext.Shops.FirstOrDefaultAsync(s => s.Id == id);
+        var shopToUpdate = await _shop.GetAsync(s => s.Id == id);
 
         if (shopToUpdate is null) return NotFound();
 
@@ -99,8 +102,8 @@ public class ShopController : Controller
 
         try
         {
-            _dbContext.Update(shopToUpdate);
-            await _dbContext.SaveChangesAsync();
+            _shop.Update(shopToUpdate);
+            await _shop.SaveAsync();
         }
         catch (DbUpdateException ex)
         {
@@ -114,7 +117,7 @@ public class ShopController : Controller
     [HttpGet("Details/{id}")]
     public async Task<IActionResult> Details(int id)
     {
-        var shop = await _dbContext.Shops.FirstOrDefaultAsync(s => s.Id == id);
+        var shop = await _shop.GetAsync(s => s.Id == id);
 
         if (shop is null)
         {
@@ -122,23 +125,16 @@ public class ShopController : Controller
             throw new Exception($"Can not found Shop by id (ID: {id}.)");
         }
 
-        var clients = await _dbContext.Clients
-              .Where(c => c.ShopId == id && !c.Cancel)
-              .ToListAsync();
+        var clients = await _client.GetClients(id);
 
         if (clients is null)
         {
             _logger.LogError($"Can not found clients by shopId (ID: {id}.)");
             throw new Exception($"Can not found clients by shopId (ID: {id}.)");
         }
+        var shopToDisplay = _mapper.Map<ShopDetailsVM>(shop);
 
-        var shopDetailsVM = new ShopDetailsVM
-        {
-            Shop = shop,
-            Clients = clients
-        };
-
-        return View(shopDetailsVM);
+        return View(shopToDisplay);
     }
 
     [HttpGet("{Id}/Items")]
@@ -198,20 +194,18 @@ public class ShopController : Controller
     }
 
     [HttpGet("{Id}/ItemCategories")]
-    public async Task<IActionResult> ItemCategories(int? id)
+    public async Task<IActionResult> ItemCategories(int id)
     {
-        var shop = await _dbContext.Shops
-                      .Include(s => s.ItemCategories)
-                      .FirstOrDefaultAsync(s => s.Id == id);
-        if (shop is null)
+        var shopWithItemCategories = await _shop.GetShopWithItemCategoriesAsync(id);
+        if (shopWithItemCategories is null)
         {
             _logger.LogError($"Shop Id:({id}) is not found");
             return NotFound();
         }
 
-        var itemCategoryViewModel = _mapper.Map<ItemCategoryVM>(shop);
+        var itemCategoriesToDisplay = _mapper.Map<ItemCategoryVM>(shopWithItemCategories);
 
-        return View(itemCategoryViewModel);
+        return View(itemCategoriesToDisplay);
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

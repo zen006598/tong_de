@@ -42,6 +42,7 @@ try
     });
 
     builder.Services.AddScoped<IClientRepository, ClientRepository>();
+    builder.Services.AddScoped<IShopRepository, ShopRepository>();
 
     //log
     builder.Host.UseSerilog();

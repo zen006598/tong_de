@@ -30,5 +30,8 @@ public class AutoMapper : Profile
     CreateMap<ItemCategoryEditVM, ItemCategory>().ForMember(dest => dest.ShopId, opt => opt.Ignore()); ;
     CreateMap<ItemCategory, ItemCategoryEditVM>();
 
+    CreateMap<Shop, ShopDetailsVM>()
+             .ForMember(dest => dest.Shop, opt => opt.MapFrom(src => src))
+             .ForMember(dest => dest.Clients, opt => opt.MapFrom(src => src.Clients));
   }
 }

@@ -45,6 +45,7 @@ try
     builder.Services.AddScoped<IShopRepository, ShopRepository>();
     builder.Services.AddScoped<IItemRepository, ItemRepository>();
     builder.Services.AddScoped<IItemAliasRepository, ItemAliasRepository>();
+    builder.Services.AddScoped<IItemCategoryRepository, ItemCategoryRepository>();
 
     //log
     builder.Host.UseSerilog();

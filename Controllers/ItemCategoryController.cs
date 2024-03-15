@@ -2,7 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using tongDe.Data;
+using tongDe.Data.Repository;
 using tongDe.Models;
 using tongDe.Models.ViewModels;
 
@@ -11,17 +11,20 @@ namespace tongDe.Controllers;
 public class ItemCategoryController : Controller
 {
     private readonly ILogger<ItemCategoryController> _logger;
-    private readonly ApplicationDbContext _dbContext;
     private readonly IMapper _mapper;
+    private readonly IItemCategoryRepository _itemCategory;
+    private readonly IShopRepository _shop;
 
     public ItemCategoryController(
         ILogger<ItemCategoryController> logger,
-        ApplicationDbContext dbContext,
-        IMapper mapper)
+        IMapper mapper,
+        IItemCategoryRepository itemCategoryRepository,
+        IShopRepository shopRepository)
     {
         _logger = logger;
-        _dbContext = dbContext;
         _mapper = mapper;
+        _itemCategory = itemCategoryRepository;
+        _shop = shopRepository;
     }
 
     [HttpGet("Shop/{ShopId}/ItemCategory/Create")]
@@ -35,7 +38,7 @@ public class ItemCategoryController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(int shopId, ItemCategoryCreateVM itemCategoryCreateVM)
     {
-        var shop = await _dbContext.Shops.FindAsync(shopId);
+        var shop = await _shop.GetAsync(s => s.Id == shopId);
 
         if (shop is null)
         {
@@ -45,12 +48,12 @@ public class ItemCategoryController : Controller
 
         if (!ModelState.IsValid) return View(itemCategoryCreateVM);
 
+        var itemCategory = _mapper.Map<ItemCategory>(itemCategoryCreateVM);
+
         try
         {
-            var itemCategory = _mapper.Map<ItemCategory>(itemCategoryCreateVM);
-
-            _dbContext.Add(itemCategory);
-            await _dbContext.SaveChangesAsync();
+            await _itemCategory.AddAsync(itemCategory);
+            await _itemCategory.SaveAsync();
         }
         catch (DbUpdateException ex)
         {
@@ -62,12 +65,12 @@ public class ItemCategoryController : Controller
     }
 
     [HttpGet("ItemCategory/Edit/{id}")]
-    public IActionResult Edit(int id)
+    public async Task<IActionResult> Edit(int id)
     {
-        var itemCategory = _dbContext.ItemCategories.FirstOrDefault(ItemCategory => ItemCategory.Id == id);
+        var itemCategory = await _itemCategory.GetAsync(ic => ic.Id == id);
         if (itemCategory is null) return NotFound();
-        var itemCategoryEditVM = _mapper.Map<ItemCategoryEditVM>(itemCategory);
-        return View(itemCategoryEditVM);
+        var itemCategoryToUpdate = _mapper.Map<ItemCategoryEditVM>(itemCategory);
+        return View(itemCategoryToUpdate);
     }
 
     [HttpPost("ItemCategory/Edit/{id}")]
@@ -76,7 +79,7 @@ public class ItemCategoryController : Controller
     {
         if (!ModelState.IsValid) return View(itemCategoryEditVM);
 
-        var ItemCategoryToUpdate = await _dbContext.ItemCategories.FirstOrDefaultAsync(ItemCategory => ItemCategory.Id == id);
+        var ItemCategoryToUpdate = await _itemCategory.GetAsync(ic => ic.Id == id);
 
         if (ItemCategoryToUpdate is null) return NotFound();
 
@@ -84,8 +87,8 @@ public class ItemCategoryController : Controller
 
         try
         {
-            _dbContext.Update(ItemCategoryToUpdate);
-            await _dbContext.SaveChangesAsync();
+            _itemCategory.Update(ItemCategoryToUpdate);
+            await _itemCategory.SaveAsync();
         }
         catch (DbUpdateException ex)
         {

@@ -12,23 +12,23 @@ namespace tongDe.Controllers;
 public class ItemController : Controller
 {
     private readonly ILogger<ItemController> _logger;
-    private readonly ApplicationDbContext _dbContext;
     private readonly IMapper _mapper;
     private readonly IShopRepository _shop;
     private readonly IItemRepository _item;
+    private readonly IItemCategoryRepository _itemCategory;
 
     public ItemController(
         ILogger<ItemController> logger,
-        ApplicationDbContext dbContext,
         IMapper mapper,
         IShopRepository shopRepository,
-        IItemRepository itemRepository)
+        IItemRepository itemRepository,
+        IItemCategoryRepository itemCategoryRepository)
     {
         _logger = logger;
-        _dbContext = dbContext;
         _mapper = mapper;
         _shop = shopRepository;
         _item = itemRepository;
+        _itemCategory = itemCategoryRepository;
     }
 
     [HttpGet("Shop/{ShopId}/Item/Create")]
@@ -77,13 +77,11 @@ public class ItemController : Controller
             return NotFound();
         }
 
-        var itemEditVM = _mapper.Map<ItemEditVM>(item);
-        //TODO:ItemCategories repository
-        itemEditVM.ItemCategories = await _dbContext.ItemCategories
-            .Where(ic => ic.ShopId == item.ShopId)
-            .ToListAsync();
+        var itemToUpdate = _mapper.Map<ItemEditVM>(item);
+        var itemCategories = await _itemCategory.GetItemCategoriesAsync(item.ShopId);
+        itemToUpdate.ItemCategories = itemCategories.ToList();
 
-        return View(itemEditVM);
+        return View(itemToUpdate);
     }
     [HttpPost("Item/Edit/{id}")]
     public async Task<IActionResult> Edit(int id, ItemEditVM itemEditVM)

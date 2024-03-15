@@ -31,4 +31,9 @@ public class Repository<T> : IRepository<T> where T : class
     {
         _dbContext.Set<T>().Update(entity);
     }
+
+    public void Remove(T entity)
+    {
+        _dbContext.Set<T>().Remove(entity);
+    }
 }

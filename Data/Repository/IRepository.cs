@@ -8,4 +8,5 @@ public interface IRepository<T> where T : class
     Task SaveAsync();
     void Update(T entity);
     Task<T> GetAsync(Expression<Func<T, bool>> predicate);
+    void Remove(T entity);
 }

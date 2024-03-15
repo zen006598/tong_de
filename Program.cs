@@ -40,9 +40,10 @@ try
     {
         options.Server.AutoRun = true;
     });
-
+    //repository
     builder.Services.AddScoped<IClientRepository, ClientRepository>();
     builder.Services.AddScoped<IShopRepository, ShopRepository>();
+    builder.Services.AddScoped<IItemRepository, ItemRepository>();
 
     //log
     builder.Host.UseSerilog();

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using tongDe.Data;
+using tongDe.Data.Repository;
 using tongDe.Models;
 using tongDe.Models.ViewModels;
 
@@ -13,15 +14,21 @@ public class ItemController : Controller
     private readonly ILogger<ItemController> _logger;
     private readonly ApplicationDbContext _dbContext;
     private readonly IMapper _mapper;
+    private readonly IShopRepository _shop;
+    private readonly IItemRepository _item;
 
     public ItemController(
         ILogger<ItemController> logger,
         ApplicationDbContext dbContext,
-        IMapper mapper)
+        IMapper mapper,
+        IShopRepository shopRepository,
+        IItemRepository itemRepository)
     {
         _logger = logger;
         _dbContext = dbContext;
         _mapper = mapper;
+        _shop = shopRepository;
+        _item = itemRepository;
     }
 
     [HttpGet("Shop/{ShopId}/Item/Create")]
@@ -32,32 +39,28 @@ public class ItemController : Controller
     }
 
     [HttpPost("Shop/{ShopId}/Item/Create")]
-    public async Task<IActionResult> Create(int shopId, ItemCreateVM itemCreateVM)
+    public async Task<IActionResult> Create(int shopId, ItemCreateVM itemToCreate)
     {
-        var shop = await _dbContext.Shops.FindAsync(shopId);
+        var shop = await _shop.GetAsync(s => s.Id == shopId);
 
         if (shop is null)
         {
             _logger.LogError($"Shop with ID {shopId} not found!", shopId);
-            return View(itemCreateVM);
+            return View(itemToCreate);
         }
 
-        if (!ModelState.IsValid)
-        {
-            return View(itemCreateVM);
-        }
+        if (!ModelState.IsValid) return View(itemToCreate);
 
+        var item = _mapper.Map<Item>(itemToCreate);
         try
         {
-            var item = _mapper.Map<Item>(itemCreateVM);
-
-            _dbContext.Add(item);
-            await _dbContext.SaveChangesAsync();
+            await _item.AddAsync(item);
+            await _item.SaveAsync();
         }
         catch (DbUpdateException ex)
         {
             _logger.LogError(ex, $"Error occurred while creating a Item for ShopId {shopId}", shopId);
-            return View(itemCreateVM);
+            return View(itemToCreate);
         }
 
         return RedirectToAction("Items", "Shop", new { id = shopId });
@@ -66,9 +69,7 @@ public class ItemController : Controller
     [HttpGet("Item/Edit/{id}")]
     public async Task<IActionResult> Edit(int id)
     {
-        var item = await _dbContext.Items
-            .Include(i => i.ItemAliases)
-            .FirstOrDefaultAsync(item => item.Id == id);
+        var item = await _item.GetItemWithAliasesAsync(id);
 
         if (item is null)
         {
@@ -77,7 +78,7 @@ public class ItemController : Controller
         }
 
         var itemEditVM = _mapper.Map<ItemEditVM>(item);
-
+        //TODO:ItemCategories repository
         itemEditVM.ItemCategories = await _dbContext.ItemCategories
             .Where(ic => ic.ShopId == item.ShopId)
             .ToListAsync();
@@ -89,7 +90,7 @@ public class ItemController : Controller
     {
         if (!ModelState.IsValid) return View(itemEditVM);
 
-        var itemToUpdate = await _dbContext.Items.FirstOrDefaultAsync(item => item.Id == id);
+        var itemToUpdate = await _item.GetAsync(i => i.Id == id);
 
         if (itemToUpdate is null)
         {
@@ -103,8 +104,8 @@ public class ItemController : Controller
 
         try
         {
-            _dbContext.Update(itemToUpdate);
-            await _dbContext.SaveChangesAsync();
+            _item.Update(itemToUpdate);
+            await _item.SaveAsync();
         }
         catch (DbUpdateException ex)
         {
@@ -116,10 +117,9 @@ public class ItemController : Controller
     }
 
     [HttpGet("Item/Details/{id}")]
-    public async Task<IActionResult> Details(int? id)
+    public async Task<IActionResult> Details(int id)
     {
-        var item = await _dbContext.Items.Include(i => i.ItemAliases).FirstOrDefaultAsync(i => i.Id == id);
-
+        var item = await _item.GetItemWithAliasesAsync(id);
         if (item is null)
         {
             _logger.LogError($"Item Id:({id}) is not found");
@@ -131,16 +131,14 @@ public class ItemController : Controller
     [HttpPost("Item/Delete/{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var item = await _dbContext.Items.
-            Include(i => i.ItemAliases)
-            .FirstOrDefaultAsync(i => i.Id == id);
+        var item = await _item.GetItemWithAliasesAsync(id);
 
         if (item is null) return NotFound(new { message = $"ItemAlias with ID {id} not found." });
 
         try
         {
-            _dbContext.Items.Remove(item);
-            await _dbContext.SaveChangesAsync();
+            _item.Remove(item);
+            await _item.SaveAsync();
         }
         catch (DbUpdateException ex)
         {

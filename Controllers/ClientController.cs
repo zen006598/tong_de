@@ -1,15 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
-using tongDe.Data;
 using AutoMapper;
 using tongDe.Models.ViewModels;
 using tongDe.Models;
 using Microsoft.EntityFrameworkCore;
 using tongDe.Data.Repository;
+using Microsoft.AspNetCore.Authorization;
 namespace tongDe.Controllers;
-
-public class ClientController : Controller
+[Route("[controller]"), Authorize]
+public class ClientController : ApplicationController
 {
-    private readonly ILogger<ClientController> _logger;
     private readonly IShopRepository _shop;
     private readonly IClientRepository _client;
     private readonly IMapper _mapper;
@@ -18,31 +17,30 @@ public class ClientController : Controller
         ILogger<ClientController> logger,
         IMapper mapper,
         IClientRepository clientRepository,
-        IShopRepository shopRepository)
+        IShopRepository shopRepository) : base(logger)
     {
-        _logger = logger;
         _mapper = mapper;
         _client = clientRepository;
         _shop = shopRepository;
     }
 
-    [HttpGet("Shop/{ShopId}/Client/Create")]
+    [HttpGet("Create")]
     public IActionResult Create(int shopId)
     {
         var newClient = new ClientCreateVM { ShopId = shopId };
         return View(newClient);
     }
 
-    [HttpPost("Shop/{ShopId}/Client/Create")]
+    [HttpPost("Create")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(int shopId, ClientCreateVM clientToCreate)
+    public async Task<IActionResult> Create(ClientCreateVM clientToCreate)
     {
+        if (!ModelState.IsValid) return View(clientToCreate);
+
+        int shopId = clientToCreate.ShopId;
         var shop = await _shop.GetAsync(s => s.Id == shopId);
-        if (shop is null)
-        {
-            _logger.LogError($"Shop with ID {shopId} not found!", shopId);
-            return View(clientToCreate);
-        }
+
+        if (shop is null) return NotFound();
 
         try
         {
@@ -56,10 +54,10 @@ public class ClientController : Controller
             return View(clientToCreate);
         }
 
-        return RedirectToAction("Details", "Shop", new { id = shopId });
+        return RedirectToAction("Clients", "Shop", new { id = shopId });
     }
 
-    [HttpGet("Client/Edit/{id}")]
+    [HttpGet("Edit/{id}")]
     public async Task<IActionResult> Edit(int id)
     {
         var client = await _client.GetAsync(c => c.Id == id);
@@ -70,13 +68,17 @@ public class ClientController : Controller
 
         return View(clientViewModel);
     }
-    [HttpPost("Client/Edit/{id}")]
+    [HttpPost("Edit/{id}")]
     public async Task<IActionResult> Edit(int id, ClientEditVM client)
     {
         if (!ModelState.IsValid) return View(client);
         var clientToUpdate = await _client.GetAsync(c => c.Id == id);
 
-        if (clientToUpdate is null) return NotFound();
+        if (clientToUpdate is null)
+        {
+            TempData["ErrorMessage"] = "The client is not found!";
+            return View(client);
+        }
 
         _mapper.Map(client, clientToUpdate);
 
@@ -91,9 +93,9 @@ public class ClientController : Controller
             return View(client);
         }
 
-        return RedirectToAction("Details", "Shop", new { id = clientToUpdate.ShopId });
+        return RedirectToAction("Clients", "Shop", new { id = clientToUpdate.ShopId });
     }
-    [HttpPost("Client/Cancel")]
+    [HttpPost("Cancel")]
     public async Task<IActionResult> Cancel(int id)
     {
         var clientToCancel = await _client.GetAsync(c => c.Id == id);
@@ -110,7 +112,7 @@ public class ClientController : Controller
             return View(clientToCancel);
         }
 
-        return RedirectToAction("Details", "Shop", new { id = clientToCancel.ShopId });
+        return RedirectToAction("Clients", "Shop", new { id = clientToCancel.ShopId });
     }
 
 

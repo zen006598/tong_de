@@ -3,10 +3,10 @@
     ViewData["Title"] = "Create Clent";
 }
 
-<form class="max-w-sm mx-auto" asp-controller="Client" asp-action="Create" asp-route-ShopId="@Model.ShopId"
-    method="post" asp-antiforgery="true">
+<form class="max-w-sm mx-auto" asp-controller="Client" asp-action="Create" method="post" asp-antiforgery="true">
 
     <div asp-validation-summary="All" class="text-red-500"></div>
+    <input type="hidden" asp-for='ShopId' />
 
     <div class="mb-5">
         <label for="Name"

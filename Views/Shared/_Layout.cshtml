@@ -9,7 +9,10 @@
 </head>
 
 <body class='bg-gray-50 dark:bg-gray-900'>
-
+  @if (TempData["ErrorMessage"] is not null)
+  {
+    <input type='hidden' id='error-message' value='@TempData["ErrorMessage"]'>
+  }
   <nav class="fixed top-0 z-10 w-full bg-white borde dark:bg-gray-900">
     <div class="flex flex-wrap items-center justify-between max-w-screen-xl p-4 mx-auto">
       <h1>
@@ -78,6 +81,7 @@
   <script src="~/lib/jquery/dist/jquery.min.js"></script>
   <script src="~/js/site.js" asp-append-version="true"></script>
   <script type="module" vite-src="~/main.js" asp-append-version="true"></script>
+  <script type='module' vite-src='~/errorAlert.js'></script>
   <script src="https://kit.fontawesome.com/37e49d8c3e.js" crossorigin="anonymous"></script>
   @await RenderSectionAsync("Scripts", required: false)
 </body>

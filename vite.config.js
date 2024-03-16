@@ -13,7 +13,8 @@ export default {
                 itemEdit: 'Assets/itemEdit.js',
                 izitoast: 'Assets/izitoast.js',
                 items: 'Assets/items.js',
-                itemsFilter: 'Assets/itemsFilter.js'
+                itemsFilter: 'Assets/itemsFilter.js',
+                errorAlert: 'Assets/errorAlert.js',
             },
             output: {
                 entryFileNames: '[name].js',

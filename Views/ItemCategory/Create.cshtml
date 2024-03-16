@@ -3,8 +3,8 @@
     ViewData["Title"] = "Create ItemCategory";
 }
 
-<form class="max-w-sm mx-auto" asp-controller="itemCategory" asp-action="Create" asp-route-ShopId="@Model.ShopId"
-    method="post" asp-antiforgery="true">
+<form class="max-w-sm mx-auto" asp-controller="itemCategory" asp-action="Create" method="post" asp-antiforgery="true">
+    <input type="hidden" asp-for="ShopId">
     <div class="mb-5">
         <label for="Name"
             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white after:content-['*'] after:ml-0.5 after:text-red-500">Name</label>

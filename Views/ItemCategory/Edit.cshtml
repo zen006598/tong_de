@@ -4,6 +4,7 @@
 }
 
 <form class="max-w-sm mx-auto" method="post" asp-controller="ItemCategory" asp-action="Edit" asp-antiforgery="true">
+    <input type="hidden" asp-for="Id">
     <div class="mb-5">
         <label for="Name"
             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white after:content-['*'] after:ml-0.5 after:text-red-500">Name</label>

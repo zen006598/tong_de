@@ -5,6 +5,7 @@
 <input type="hidden" value="@Model.Id" disabled id='item-id'>
 <form class="max-w-sm mx-auto" asp-controller="Item" asp-action="Edit" method="post" asp-antiforgery="true">
     <input type="hidden" asp-for="ShopId">
+    <input type="hidden" asp-for="Id">
     <div class='flex items-center justify-between mb-4'>
         <div>
             <label for="Name"
@@ -99,5 +100,4 @@
 
 @section Scripts {
     <script type='module' vite-src='~/itemEdit.js'></script>
-
 }

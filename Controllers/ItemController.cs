@@ -8,10 +8,9 @@ using tongDe.Models;
 using tongDe.Models.ViewModels;
 
 namespace tongDe.Controllers;
-[Authorize]
-public class ItemController : Controller
+[Authorize, Route("[controller]")]
+public class ItemController : ApplicationController
 {
-    private readonly ILogger<ItemController> _logger;
     private readonly IMapper _mapper;
     private readonly IShopRepository _shop;
     private readonly IItemRepository _item;
@@ -22,34 +21,35 @@ public class ItemController : Controller
         IMapper mapper,
         IShopRepository shopRepository,
         IItemRepository itemRepository,
-        IItemCategoryRepository itemCategoryRepository)
+        IItemCategoryRepository itemCategoryRepository) : base(logger)
     {
-        _logger = logger;
         _mapper = mapper;
         _shop = shopRepository;
         _item = itemRepository;
         _itemCategory = itemCategoryRepository;
     }
 
-    [HttpGet("Shop/{ShopId}/Item/Create")]
+    [HttpGet("Create")]
     public IActionResult Create(int shopId)
     {
         var newItem = new ItemCreateVM { ShopId = shopId };
         return View(newItem);
     }
 
-    [HttpPost("Shop/{ShopId}/Item/Create")]
-    public async Task<IActionResult> Create(int shopId, ItemCreateVM itemToCreate)
+    [HttpPost("Create")]
+    public async Task<IActionResult> Create(ItemCreateVM itemToCreate)
     {
+        if (!ModelState.IsValid) return View(itemToCreate);
+
+        int shopId = itemToCreate.ShopId;
         var shop = await _shop.GetAsync(s => s.Id == shopId);
 
         if (shop is null)
         {
             _logger.LogError($"Shop with ID {shopId} not found!", shopId);
+            TempData["ErrorMessage"] = "The Shop is not found!";
             return View(itemToCreate);
         }
-
-        if (!ModelState.IsValid) return View(itemToCreate);
 
         var item = _mapper.Map<Item>(itemToCreate);
         try
@@ -66,16 +66,11 @@ public class ItemController : Controller
         return RedirectToAction("Items", "Shop", new { id = shopId });
     }
 
-    [HttpGet("Item/Edit/{id}")]
+    [HttpGet("Edit")]
     public async Task<IActionResult> Edit(int id)
     {
         var item = await _item.GetItemWithAliasesAsync(id);
-
-        if (item is null)
-        {
-            _logger.LogError("Item no found");
-            return NotFound();
-        }
+        if (item is null) return NotFound();
 
         var itemToUpdate = _mapper.Map<ItemEditVM>(item);
         var itemCategories = await _itemCategory.GetItemCategoriesAsync(item.ShopId);
@@ -83,17 +78,19 @@ public class ItemController : Controller
 
         return View(itemToUpdate);
     }
-    [HttpPost("Item/Edit/{id}")]
-    public async Task<IActionResult> Edit(int id, ItemEditVM itemEditVM)
+
+    [HttpPost("Edit")]
+    public async Task<IActionResult> Edit(ItemEditVM itemEditVM)
     {
         if (!ModelState.IsValid) return View(itemEditVM);
-
+        int id = itemEditVM.Id;
         var itemToUpdate = await _item.GetAsync(i => i.Id == id);
 
         if (itemToUpdate is null)
         {
             _logger.LogError("Item no found");
-            return NotFound();
+            TempData["ErrorMessage"] = "The Item is not found!";
+            return View(itemEditVM);
         }
 
         if (itemEditVM.ShopId != itemToUpdate.ShopId) return NotFound();
@@ -114,7 +111,7 @@ public class ItemController : Controller
         return RedirectToAction("Items", "Shop", new { id = itemToUpdate.ShopId });
     }
 
-    [HttpGet("Item/Details/{id}")]
+    [HttpGet("Details")]
     public async Task<IActionResult> Details(int id)
     {
         var item = await _item.GetItemWithAliasesAsync(id);
@@ -126,12 +123,12 @@ public class ItemController : Controller
 
         return View(item);
     }
-    [HttpPost("Item/Delete/{id}")]
+    [HttpPost("Delete")]
     public async Task<IActionResult> Delete(int id)
     {
         var item = await _item.GetItemWithAliasesAsync(id);
 
-        if (item is null) return NotFound(new { message = $"ItemAlias with ID {id} not found." });
+        if (item is null) return NotFound(new { message = $"Item with ID {id} not found." });
 
         try
         {

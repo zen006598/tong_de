@@ -3,8 +3,8 @@
     ViewData["Title"] = "Create Item";
 }
 
-<form class="max-w-sm mx-auto" asp-controller="Item" asp-action="Create" asp-route-ShopId="@Model.ShopId" method="post"
-    asp-antiforgery="true">
+<form class="max-w-sm mx-auto" asp-controller="Item" asp-action="Create" method="post" asp-antiforgery="true">
+    <input type="hidden" asp-for='ShopId' />
     <div class='flex items-center justify-between mb-4'>
         <div>
             <label for="Name"

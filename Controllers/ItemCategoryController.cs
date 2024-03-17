@@ -100,6 +100,36 @@ public class ItemCategoryController : ApplicationController
         }
         return RedirectToAction("ItemCategories", "Shop", new { id = ItemCategoryToUpdate.ShopId });
     }
+    [HttpPost("Delete"), ValidateAntiForgeryToken]
+    public async Task<IActionResult> Delete(int id)
+    {
+        //get all item under this category
+        ItemCategory itemCategory = await _itemCategory.GetItemCategoryWithItemsAsync(id);
+        if (itemCategory is null) return NotFound();
+        //remove the fk from item
+        try
+        {
+            if (itemCategory.Items is not null)
+            {
+                foreach (var item in itemCategory.Items)
+                {
+                    item.ItemCategoryId = null;
+                }
+                _itemCategory.Update(itemCategory);
+                await _itemCategory.SaveAsync();
+            }
+            //remove this category
+            _itemCategory.Remove(itemCategory);
+            await _itemCategory.SaveAsync();
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, $"Error occurred while Remove a Item Category");
+            return NotFound();
+        }
+
+        return RedirectToAction("itemCategories", "Shop", new { id = itemCategory.ShopId });
+    }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()

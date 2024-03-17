@@ -41,7 +41,8 @@
                                     </a>
 
                                     <form asp-action="Delete" asp-controller="ItemCategory" method="post"
-                                        asp-route-id="@itemCategory.Id">
+                                        asp-antiforgery="true" asp-route-id="@itemCategory.Id">
+
                                         <button type='submit'
                                             class="inline-flex items-center justify-center w-6 h-6 text-sm font-semibold text-gray-800 bg-gray-100 rounded-full me-2 dark:bg-gray-700 dark:text-gray-300">
                                             <i class=" fa-solid fa-trash-can hover:text-red-600"></i>

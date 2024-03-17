@@ -13,4 +13,10 @@ public class ItemCategoryRepository : Repository<ItemCategory>, IItemCategoryRep
     {
         return await _dbContext.ItemCategories.Where(ic => ic.ShopId == shopId).ToListAsync();
     }
+
+    public async Task<ItemCategory> GetItemCategoryWithItemsAsync(int id)
+    {
+        var itemCategory = await _dbContext.ItemCategories.Include(ic => ic.Items).FirstOrDefaultAsync(ic => ic.Id == id);
+        return itemCategory;
+    }
 }

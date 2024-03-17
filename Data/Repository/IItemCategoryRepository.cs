@@ -5,4 +5,5 @@ namespace tongDe.Data.Repository;
 public interface IItemCategoryRepository : IRepository<ItemCategory>
 {
     Task<IEnumerable<ItemCategory>> GetItemCategoriesAsync(int shopId);
+    Task<ItemCategory> GetItemCategoryWithItemsAsync(int id);
 }

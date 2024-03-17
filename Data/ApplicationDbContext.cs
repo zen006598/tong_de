@@ -15,4 +15,5 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Item> Items { get; set; }
     public DbSet<ItemAlias> ItemAliases { get; set; }
     public DbSet<ItemCategory> ItemCategories { get; set; }
+    public DbSet<Order> Orders { get; set; }
 }

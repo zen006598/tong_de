@@ -14,7 +14,6 @@ public class Item
     public int ShopId { get; set; }
     public Shop Shop { get; set; } = null!;
     public ICollection<ItemAlias> ItemAliases { get; } = new List<ItemAlias>();
-
     public int? ItemCategoryId { get; set; }
     public ItemCategory? ItemCategory { get; set; }
 

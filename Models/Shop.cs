@@ -14,4 +14,5 @@ public class Shop
     public ICollection<Client> Clients { get; } = new List<Client>();
     public ICollection<Item> Items { get; } = new List<Item>();
     public ICollection<ItemCategory> ItemCategories { get; } = new List<ItemCategory>();
+    public ICollection<Order> Orders { get; } = new List<Order>();
 }

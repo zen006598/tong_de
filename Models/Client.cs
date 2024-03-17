@@ -12,4 +12,5 @@ public class Client : IEntity
     public bool Cancel { get; set; }
     public int ShopId { get; set; }
     public Shop Shop { get; set; } = null!;
+    public ICollection<Order> Orders { get; } = new List<Order>();
 }

@@ -49,6 +49,7 @@ try
     builder.Services.AddScoped<IItemRepository, ItemRepository>();
     builder.Services.AddScoped<IItemAliasRepository, ItemAliasRepository>();
     builder.Services.AddScoped<IItemCategoryRepository, ItemCategoryRepository>();
+    builder.Services.AddScoped<IOrderRepository, OrderRepository>();
     //service
     builder.Services.AddScoped<IOrderService, OrderService>();
     //log

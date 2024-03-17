@@ -9,7 +9,7 @@ public class OrderItem : IEntity
     [Required]
     public string? Name { get; set; }
     [Required]
-    public string? Quantity { get; set; }
+    public int Quantity { get; set; }
     [Required]
     public string? Unit { get; set; }
     public int OrderId { get; set; }

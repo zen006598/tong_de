@@ -24,8 +24,8 @@ public class OrderReceiveApiController : ControllerBase
     [HttpPost("ReceiveOrder")]
     public async Task<ActionResult> ReceiveOrder(LineBotMessage lineBotMessage)
     {
-        //驗證token(Shop.Token)
-        //找到Shop
+        //驗證token(Shop.Token) IShopService => verify token
+        //找到Shop IShopRepository => get Shop
         //驗證傳入非空字串
         //字串拆分（[^\\w\\s]）
         //第一字串為client Name

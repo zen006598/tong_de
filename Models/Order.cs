@@ -17,5 +17,5 @@ public class Order : IEntity
     public int ClientId { get; set; }
     [DeleteBehavior(DeleteBehavior.NoAction)]
     public Client Client { get; set; } = null!;
-
+    public ICollection<OrderItem> OrderItems { get; } = new List<OrderItem>();
 }

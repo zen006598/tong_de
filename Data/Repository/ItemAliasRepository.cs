@@ -1,4 +1,5 @@
 using tongDe.Models;
+using tongDe.Data.Repository.Interfaces;
 
 namespace tongDe.Data.Repository;
 

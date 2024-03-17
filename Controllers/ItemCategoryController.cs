@@ -2,7 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using tongDe.Data.Repository;
+using tongDe.Data.Repository.Interfaces;
 using tongDe.Models;
 using tongDe.Models.ViewModels;
 

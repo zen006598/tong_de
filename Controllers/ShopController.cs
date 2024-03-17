@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using tongDe.Data;
-using tongDe.Data.Repository;
+using tongDe.Data.Repository.Interfaces;
 using tongDe.Models;
 using tongDe.Models.ViewModels;
 

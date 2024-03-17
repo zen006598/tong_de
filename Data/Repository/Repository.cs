@@ -1,9 +1,9 @@
 
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using tongDe.Data.Repository.Interfaces;
 
 namespace tongDe.Data.Repository;
-
 public class Repository<T> : IRepository<T> where T : class
 {
     protected readonly ApplicationDbContext _dbContext;

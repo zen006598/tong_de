@@ -3,7 +3,7 @@ using AutoMapper;
 using tongDe.Models.ViewModels;
 using tongDe.Models;
 using Microsoft.EntityFrameworkCore;
-using tongDe.Data.Repository;
+using tongDe.Data.Repository.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 namespace tongDe.Controllers;
 [Route("[controller]"), Authorize]

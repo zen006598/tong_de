@@ -1,9 +1,8 @@
-using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using tongDe.Models;
+using tongDe.Data.Repository.Interfaces;
 
 namespace tongDe.Data.Repository;
-
 public class ShopRepository : Repository<Shop>, IShopRepository
 {
     public ShopRepository(ApplicationDbContext dbContext) : base(dbContext)

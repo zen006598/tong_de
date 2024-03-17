@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using tongDe.Models;
+using tongDe.Data.Repository.Interfaces;
 
 namespace tongDe.Data.Repository;
-
 public class ItemCategoryRepository : Repository<ItemCategory>, IItemCategoryRepository
 {
     public ItemCategoryRepository(ApplicationDbContext dbContext) : base(dbContext)

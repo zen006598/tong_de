@@ -1,7 +1,6 @@
 using System.Linq.Expressions;
 
-namespace tongDe.Data.Repository;
-
+namespace tongDe.Data.Repository.Interfaces;
 public interface IRepository<T> where T : class
 {
     Task AddAsync(T entity);

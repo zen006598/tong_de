@@ -6,6 +6,9 @@ using Serilog;
 using Microsoft.AspNetCore.Identity;
 using tongDe.Models;
 using tongDe.Data.Repository;
+using tongDe.Data.Repository.Interfaces;
+using tongDe.Services.Interfaces;
+using tongDe.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 Log.Information("Starting web host");
@@ -46,7 +49,8 @@ try
     builder.Services.AddScoped<IItemRepository, ItemRepository>();
     builder.Services.AddScoped<IItemAliasRepository, ItemAliasRepository>();
     builder.Services.AddScoped<IItemCategoryRepository, ItemCategoryRepository>();
-
+    //service
+    builder.Services.AddScoped<IOrderService, OrderService>();
     //log
     builder.Host.UseSerilog();
 

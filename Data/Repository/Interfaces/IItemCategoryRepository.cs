@@ -1,6 +1,6 @@
 using tongDe.Models;
 
-namespace tongDe.Data.Repository;
+namespace tongDe.Data.Repository.Interfaces;
 
 public interface IItemCategoryRepository : IRepository<ItemCategory>
 {

@@ -6,5 +6,5 @@ public interface IOrderService
 {
     Task<int> CreateOrderAsync(OrderInfo orderInfo);
 
-    OrderInfo StringProcess(string unFormattedString);
+    OrderInfo ConvertStringToOrderInfo(string unFormattedString);
 }

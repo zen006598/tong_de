@@ -19,16 +19,18 @@ public class OrderService : IOrderService
         throw new NotImplementedException();
     }
 
-    public OrderInfo StringProcess(string unFormattedString)
+    public OrderInfo ConvertStringToOrderInfo(string unFormattedString)
     {
-        string[] splittedWords = unFormattedString.Split('\n');
+        string[] splittedWords = unFormattedString.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-        OrderInfo order = new OrderInfo()
+        if (splittedWords.Length < 2) return null;
+
+        OrderInfo orderInfo = new OrderInfo()
         {
             ClientName = splittedWords[0],
+            OrderItems = new List<OrderItem>()
         };
 
-        //get the words after the first string
         foreach (var item in splittedWords.Skip(1))
         {
             var parts = Regex.Match(item, @"(\D+)\s*(\d+)\s*(.+)");
@@ -40,8 +42,9 @@ public class OrderService : IOrderService
                 Quantity = int.Parse(parts.Groups[2].Value),
                 Unit = parts.Groups[3].Value.Trim()
             };
-            order.OrderItems.Add(orderItem);
+            orderInfo.OrderItems.Add(orderItem);
         }
-        return order;
+        if (orderInfo.OrderItems.Count == 0) return null;
+        return orderInfo;
     }
 }

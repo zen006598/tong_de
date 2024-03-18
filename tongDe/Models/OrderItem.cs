@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using tongDe.Data;
 
 namespace tongDe.Models;
@@ -9,7 +10,9 @@ public class OrderItem : IEntity
     [Required]
     public string? Name { get; set; }
     [Required]
-    public int Quantity { get; set; }
+    [Range(typeof(decimal), "0.001", "9999", ErrorMessage = "Quantity must be greater than 0 and can have up to three decimal places.")]
+    [Column(TypeName = "decimal(10,3)")]
+    public decimal Quantity { get; set; }
     [Required]
     public string? Unit { get; set; }
     public int OrderId { get; set; }

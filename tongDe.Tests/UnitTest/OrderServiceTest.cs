@@ -8,9 +8,10 @@ public class OrderServiceTest
     [InlineData("客戶A\n商品A 2件\n商品B 3斤", 2, "商品A", 2, "件", "商品B", 3, "斤")]
     [InlineData("客戶A\n商品A 2 件\n商品B 3 斤", 2, "商品A", 2, "件", "商品B", 3, "斤")]
     [InlineData("客戶A\n商品A2件\n商品B3斤", 2, "商品A", 2, "件", "商品B", 3, "斤")]
+    [InlineData("客戶A\n商品A2件\n商品B9.99斤", 2, "商品A", 2, "件", "商品B", 9.99, "斤")]
     public void ConvertStringToOrderInfo_ShouldReturnCorrectOrderInfo_WithValidString(string input, int expectedItemCount,
-        string expectedFirstItemName, int expectedFirstItemQuantity, string expectedFirstItemUnit,
-        string expectedSecondItemName, int expectedSecondItemQuantity, string expectedSecondItemUnit)
+        string expectedFirstItemName, decimal expectedFirstItemQuantity, string expectedFirstItemUnit,
+        string expectedSecondItemName, decimal expectedSecondItemQuantity, string expectedSecondItemUnit)
     {
         // Arrange
         var orderService = new OrderService(null);
@@ -25,12 +26,12 @@ public class OrderServiceTest
 
         var firstItem = result.OrderItems.First();
         Assert.Equal(expectedFirstItemName, firstItem.Name);
-        Assert.Equal(expectedFirstItemQuantity, firstItem.Quantity);
+        Assert.Equal(expectedFirstItemQuantity, firstItem.Quantity, 3);
         Assert.Equal(expectedFirstItemUnit, firstItem.Unit);
 
         var secondItem = result.OrderItems.Last();
         Assert.Equal(expectedSecondItemName, secondItem.Name);
-        Assert.Equal(expectedSecondItemQuantity, secondItem.Quantity);
+        Assert.Equal(expectedSecondItemQuantity, secondItem.Quantity, 3);
         Assert.Equal(expectedSecondItemUnit, secondItem.Unit);
     }
 

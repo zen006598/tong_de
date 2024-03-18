@@ -28,18 +28,18 @@ public class OrderService : IOrderService
         OrderInfo orderInfo = new OrderInfo()
         {
             ClientName = splittedWords[0],
-            OrderItems = new List<OrderItem>()
+            OrderItems = new List<DTOs.Infos.OrderItem>()
         };
 
         foreach (var item in splittedWords.Skip(1))
         {
-            var parts = Regex.Match(item, @"(\D+)\s*(\d+)\s*(.+)");
+            var parts = Regex.Match(item, @"(\D+)\s*([\d\.]+)\s*(.+)");
             if (!parts.Success) continue;
 
-            var orderItem = new OrderItem
+            var orderItem = new DTOs.Infos.OrderItem
             {
                 Name = parts.Groups[1].Value.Trim(),
-                Quantity = int.Parse(parts.Groups[2].Value),
+                Quantity = decimal.Parse(parts.Groups[2].Value),
                 Unit = parts.Groups[3].Value.Trim()
             };
             orderInfo.OrderItems.Add(orderItem);

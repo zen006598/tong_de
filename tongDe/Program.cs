@@ -23,8 +23,10 @@ try
     //vite
     builder.Services.AddViteServices();
     //db connection
+    string dbPassword = builder.Configuration["Password"];
+    string DbConnectionString = builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING").Replace("{Password}", dbPassword);
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING"),
+        options.UseSqlServer(DbConnectionString,
         options => options.EnableRetryOnFailure(//暫時性錯誤重試
                 maxRetryCount: 5,
                 maxRetryDelay: TimeSpan.FromSeconds(30),
@@ -52,6 +54,7 @@ try
     builder.Services.AddScoped<IOrderRepository, OrderRepository>();
     //service
     builder.Services.AddScoped<IOrderService, OrderService>();
+    builder.Services.AddScoped<ITokenService, TokenService>();
     //log
     builder.Host.UseSerilog();
 

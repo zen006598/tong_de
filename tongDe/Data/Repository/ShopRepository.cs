@@ -14,6 +14,11 @@ public class ShopRepository : Repository<Shop>, IShopRepository
         throw new NotImplementedException();
     }
 
+    public Task<Shop> GetShopByTokenAsync(Guid guid)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<IEnumerable<Shop>> GetShops(string userId)
     {
         var shops = await _dbContext.Shops.Where(s => s.UserId == userId).ToListAsync();

@@ -7,4 +7,5 @@ public interface IShopRepository : IRepository<Shop>
     Task CancelAsync(int id);
 
     Task<Shop> GetShopWithItemCategoriesAsync(int id);
+    Task<Shop> GetShopByTokenAsync(Guid guid);
 }

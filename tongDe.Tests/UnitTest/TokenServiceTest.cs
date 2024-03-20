@@ -11,7 +11,7 @@ public class TokenServiceTest
 
     public TokenServiceTest()
     {
-        _mockConfig.SetupGet(x => x["key"]).Returns("12345678901234567890123456789012");
+        _mockConfig.SetupGet(x => x["TokenService:Key"]).Returns("12345678901234567890123456789012");
         var config = _mockConfig.Object;
 
         _tokenService = new TokenService(config);

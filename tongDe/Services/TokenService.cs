@@ -7,11 +7,10 @@ namespace tongDe.Services;
 public class TokenService : ITokenService
 {
     private readonly byte[] _key;
-    private readonly IConfiguration _config;
 
     public TokenService(IConfiguration configuration)
     {
-        _key = Encoding.UTF8.GetBytes(configuration["key"]);
+        _key = Encoding.UTF8.GetBytes(configuration["TokenService:Key"]);
     }
 
     public string Encrypt(Guid shopToken, Guid userId)

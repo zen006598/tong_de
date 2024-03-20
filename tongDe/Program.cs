@@ -23,8 +23,8 @@ try
     //vite
     builder.Services.AddViteServices();
     //db connection
-    string dbPassword = builder.Configuration["Password"];
-    string DbConnectionString = builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING").Replace("{Password}", dbPassword);
+    string dbPassword = builder.Configuration["AzureSql:Password"];
+    string DbConnectionString = builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING").Replace("{AzureSql:Password}", dbPassword);
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseSqlServer(DbConnectionString,
         options => options.EnableRetryOnFailure(//暫時性錯誤重試
